@@ -1,0 +1,181 @@
+\{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+
+button { margin-left: 10px; padding-left: 10px; padding-right: 10px; float:left; }
+#webgrab_configuration_id {float: left;}
+#report { display: none; }
+
+{% if isRunning %}
+#runAll { display: none; }
+#loader { display: block; }
+{% else %}
+#cancelGrabbing { display: none; }
+{% endif %}
+
+svg {
+    max-width: 3em;
+    border-radius: 3px;
+    /*box-shadow: 2px 2px 5px #000;*/
+    background: #fff;
+    fill: none;
+    stroke: #0026ff;
+    stroke-linecap: round;
+    stroke-width: 8%;
+    float:left;
+    display: none;
+
+}
+
+use {
+  stroke: #fff;
+  animation: a 2s linear infinite
+}
+
+@keyframes a { to { stroke-dashoffset: 0px } }
+
+</style>
+
+<h2>{{ title }}</h2>
+<h3>{{ message }}</h3>
+
+<p>Currently there are {{ nChannels }} enabled channels. Last EPG grabbing was on {{lastGrabbingTime}}.</p>
+
+<p>Last used <a href="/downloads/wgmulti.config.json" target="_blank">wgmulti.config.json</a>
+<br />
+</p>
+
+Select WebGrab options and click Run:
+<br /><br />
+<select name="webgrab_configuration_id" id="webgrab_configuration_id">
+{% for config in configs %}
+    <option value="{{ config.id }}">{{ config.name }}</option>
+{% endfor %}
+</select>
+
+<button id="runAll">Run</button> 
+<button id="cancelGrabbing">Cancel</button> 
+
+<svg viewBox="-2000 -1000 4000 2000" id="loader">
+    <path id="inf" d="M354-354A500 500 0 1 1 354 354L-354-354A500 500 0 1 0-354 354z"></path>
+    <use xlink:href="#inf" stroke-dasharray="1570 5143" stroke-dashoffset="6713px"></use>
+</svg>
+
+<br />
+<br />
+
+<pre id="status">
+</pre>
+
+<table id="report">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Siteini</th>
+    <th>Programs</th>
+    <th>Siteini #</th>
+    <th>First show date</th>
+    <th>Last show date</th>
+  </tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $( document ).ready(function() {
+        setInterval(checkGrabbingStatus, 5000);
+    });
+    var process = 'wgmulti.exe';
+    var reportRetrieved = false;
+
+    function getReport() {
+        $.ajax({
+            url: 'grabbing/epg/report',
+            dataType: 'json',
+            success: function (data) {
+                var status = $("#status");
+                status.empty();
+                if (data.status) {
+                  status.append("Last grabbing report:<br>Total grabbed channels: " + data.report.total + "<br>");
+                  status.append("Channels with EPG: " + data.report.channelsWithEpg + "<br>");
+                  status.append("Channels without EPG: " + data.report.channelsWithoutEpg + "<br>");
+                  status.append("Generation time: " + data.report.generationTime + "<br>");
+                  status.append("Generated on: " + data.report.generatedOn + "<br>");
+                  status.append("EPG file size: " + data.report.fileSize + " (bytes) <br>");
+                  status.append("EPG file md5 hash: " + data.report.md5hash + "<br>");
+                  //data.report.channels.forEach(function(channel) {
+                  //  content = "<tr><td>"+channel.name+"</td>";
+                  //  content += "<td>"+channel.siteiniName+"</td>";
+                  //  content += "<td>"+channel.programsCount+"</td>";
+                  //  content += "<td>"+channel.siteiniIndex+"</td>";
+                  //  content += "<td>"+channel.firstShowStartsAt+"</td>";
+                  //  content += "<td>"+channel.lastShowStartsAt+"</td></tr>";
+                  //  $("#report > tbody").append(content);
+                  });
+                  $("#report").show();
+                } else {
+                  status.append("Error: " + data.details);
+                }
+                reportRetrieved = true;
+            }
+        });
+    }
+
+    function checkGrabbingStatus() {
+        $.ajax({
+            url: 'grabbing/run/status/' + process,
+            dataType: 'json',
+            success: function (data) {
+                if (data.isRunning) {
+                    $("#runAll").attr("disabled", true);
+                    $("#cancelGrabbing").show();
+                    $("#loader").show();
+                } else {
+                    $("#runAll").attr("disabled", false);
+                    process = 'wgmulti.exe';
+                    $("#cancelGrabbing").hide();
+                    $("#loader").hide();
+                    if (!reportRetrieved)
+                      getReport();
+                }
+            }
+        });
+    }
+
+    $("#runAll").click(function (e) {
+        $(this).attr("disabled", true);
+        $("#status").empty();
+        selectEl = document.getElementById('webgrab_configuration_id');
+        id = selectEl.options[selectEl.selectedIndex].value;
+        $.ajax({
+            url: 'grabbing/run/all/' + id,
+            dataType: 'json',
+            success: function (data) {
+                let status = $('#status');
+                status.append(data.config.message + '<br>');
+                status.append(data.siteinis.message + '<br>');
+                status.append(data.settings.message + '<br>');
+                status.append(data.grabbing.message + '<br>');
+                
+                process = data.grabbing.processId;
+
+                if (data.grabbing.status) {
+                    $('#cancelGrabbing').show();
+                    $('#loader').show();
+                }
+                else {
+                    $('#loader').hide();
+                    $('#cancelGrabbing').hide();
+                }
+            }
+      });
+
+    });
+  </script>
+{% endblock %}

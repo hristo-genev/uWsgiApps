@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Настройки:</h2>
+
+{% if message %}
+  <p class='{{message.class}}'>{{message.text}}</p>
+{% endif %}
+
+<form method="POST" action="">
+{% csrf_token %}
+
+<table>
+{{ form }}
+</table>
+<br>
+
+<input type='submit' value='Запази' />
+</form>
+
+<br>
+<br>
+<a target='_blank' 
+   href='http://webgrabplus.com/documentation/configuration/webgrabconfigxml#config_retry'>WebGrab Документация</a>
+
+{% endblock %}

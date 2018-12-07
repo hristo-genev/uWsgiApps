@@ -1,0 +1,21 @@
+server {
+  listen 80;
+  server_name epgapp.kodibg.org;
+  listen [::]:80;
+
+  location = /favicon.ico { access_log off; log_not_found off; }
+
+  location /static/ {
+    root /home/g/uWsgiApps/epgapp/epgapp/;
+  }
+
+  location /downloads/ {
+    alias /home/g/uWsgiApps/epgapp/epgapp/temp/;
+    #autoindex on;
+  }
+
+  location / {
+    include uwsgi_params;
+    uwsgi_pass unix:/run/uwsgi/epgapp.sock;
+  }
+}

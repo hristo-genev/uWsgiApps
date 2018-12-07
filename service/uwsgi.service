@@ -1,0 +1,15 @@
+[Unit]
+Description=uWSGI instance to serve all my uWsgi applications
+
+[Service]
+ExecStartPre=-/bin/bash -c 'mkdir -p /run/uwsgi; chown g:www-data /run/uwsgi; source /home/g/Env/uWsgiApps/bin/activate;'
+ExecStart=/home/g/Env/uWsgiApps/bin/uwsgi --emperor /home/g/uWsgiApps/sites/
+
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+NotifyAccess=all
+
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>{{ siteini.name }}</h1>
+
+<br />
+<a href="{% url 'admin:epgapp_siteini_change' siteini.id %}">Edit</a> | 
+<a href="{% url 'siteini-test' siteini.name %}">Test</a>
+
+<br />
+<br />
+Last EPG grabbed with this siteini:
+<pre id="content">{{content}}</pre>
+{% endblock %}

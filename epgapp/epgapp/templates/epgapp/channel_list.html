@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>Channels</h1>
+<ul>
+{% for channel in object_list %}
+    <li><a href="{{ channel.get_absolute_url }}">{{ channel.name }}</a></li>
+{% empty %}
+    <li>No channels yet.</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

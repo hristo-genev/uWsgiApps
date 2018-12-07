@@ -1,0 +1,17 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>{{ channel.name }}</h1>
+
+<a href="{% url 'admin:epgapp_channel_change' channel.id %}">Edit channel details</a> | 
+<a href="{% url 'grab' channel.slug %}">Run grabber</a> |
+
+<hr />
+{# #}<span>&lt;channel site="{{channel.siteinis.all.0.name}}" site_id="{{channel.siteinis.all.0.site_id}}" update="{{channel.update}}" xmltv_id="{{channel.xmltv_id}}"&gt;{{ channel.name }}&lt;/channel&gt; </span>
+
+<br />
+<br />
+Last EPG grabbed for this channel:
+<pre id="content">{{content}}</pre>
+{% endblock %}

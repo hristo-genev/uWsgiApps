@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <Name>epgapp</Name>
+    <RootNamespace>epgapp</RootNamespace>
+    <WebBrowserPort>55298</WebBrowserPort>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <IsWindowsApplication>False</IsWindowsApplication>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>e3584edd-0146-4c48-ab60-aaafa4f1514d</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectTypeGuids>{5F0BE9CA-D677-4A4D-8806-6076C0FAAD37};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <StartupFile>manage.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <WebBrowserUrl>http://localhost/siteinis</WebBrowserUrl>
+    <LaunchProvider>Django launcher</LaunchProvider>
+    <DjangoSettingsModule>epgapp.settings</DjangoSettingsModule>
+    <OutputPath>.</OutputPath>
+    <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="epgapp\admin.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="epgapp\forms.py" />
+    <Compile Include="epgapp\models.py" />
+    <Compile Include="epgapp\helper.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="epgapp\serializers.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="epgapp\tests.py" />
+    <Compile Include="epgapp\views.py" />
+    <Compile Include="epgapp\__init__.py" />
+    <Compile Include="epgapp\migrations\__init__.py" />
+    <Compile Include="manage.py" />
+    <Compile Include="epgapp\settings.py" />
+    <Compile Include="epgapp\urls.py" />
+    <Compile Include="epgapp\wsgi.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="epgapp\" />
+    <Folder Include="epgapp\bin\" />
+    <Folder Include="epgapp\migrations\" />
+    <Folder Include="epgapp\static\" />
+    <Folder Include="epgapp\static\content\" />
+    <Folder Include="epgapp\static\fonts\" />
+    <Folder Include="epgapp\static\scripts\" />
+    <Folder Include="epgapp\templates\" />
+    <Folder Include="epgapp\templates\epgapp\" />
+    <Folder Include="epgapp\templates\registration\" />
+    <Folder Include="epgapp\temp\" />
+    <Folder Include="epgapp\temp\siteini.pack\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="epgapp\bin\WebGrab+Plus.exe" />
+    <Content Include="epgapp\bin\wgmulti.exe" />
+    <Content Include="epgapp\bin\wgmulti.exe.config" />
+    <Content Include="epgapp\bin\wgmulti.log.txt" />
+    <Content Include="epgapp\bin\xmltv.dll" />
+    <Content Include="epgapp\bin\xmltv_mdb_processor.exe" />
+    <Content Include="epgapp\templates\epgapp\epg.html" />
+    <Content Include="epgapp\templates\epgapp\stats.html" />
+    <Content Include="epgapp\templates\epgapp\siteini_test.html" />
+    <Content Include="epgapp\templates\epgapp\siteini_list.html" />
+    <Content Include="epgapp\templates\epgapp\siteini_detail.html" />
+    <Content Include="epgapp\templates\epgapp\channel_detail.html" />
+    <Content Include="epgapp\templates\epgapp\grab.html" />
+    <Content Include="epgapp\templates\settings.html" />
+    <Content Include="epgapp\temp\siteini.pack\24kitchen.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\armymedia.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\axn.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\beinsports.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\bnt.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\btv.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\bulgaria24.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\constantepg.kodibg.org.ini" />
+    <Content Include="epgapp\temp\siteini.pack\cosmote.gr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\destination-bg.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\digiturk.com.tr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\disney.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\dnes.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\dnevnik.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\dsmart.com.tr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\eirsport.ie.ini" />
+    <Content Include="epgapp\temp\siteini.pack\elmundo.es.ini" />
+    <Content Include="epgapp\temp\siteini.pack\elpais.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\engin.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\entertainment.ie.ini" />
+    <Content Include="epgapp\temp\siteini.pack\ert.gr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\espana.yo.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\film1.nl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\filmbox.pl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\filmon.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\foodnetworktv.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\foxsports.nl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\francaise.yo.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\freesat.co.uk.ini" />
+    <Content Include="epgapp\temp\siteini.pack\guidatv.sky.it.ini" />
+    <Content Include="epgapp\temp\siteini.pack\hbo.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\hmtv.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\hobbytv.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.at.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.ch.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.fr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.ie.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.nl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.pl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\horizon.tv.ro.ini" />
+    <Content Include="epgapp\temp\siteini.pack\italia.yo.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\kartina.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\kesintisiz.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\kiss13.net.ini" />
+    <Content Include="epgapp\temp\siteini.pack\klack.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\m.tele.at.ini" />
+    <Content Include="epgapp\temp\siteini.pack\m.tvguide.co.uk-full.ini" />
+    <Content Include="epgapp\temp\siteini.pack\m.tvguide.co.uk-index.ini" />
+    <Content Include="epgapp\temp\siteini.pack\m.tvprofil.net.ini" />
+    <Content Include="epgapp\temp\siteini.pack\m.tvtoday.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\matchtv.ru.ini" />
+    <Content Include="epgapp\temp\siteini.pack\media-press.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\mediaset.it.ini" />
+    <Content Include="epgapp\temp\siteini.pack\mediasetpremium.it.ini" />
+    <Content Include="epgapp\temp\siteini.pack\megaepg.kodibg.org.ini" />
+    <Content Include="epgapp\temp\siteini.pack\mi.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\mojtv.hr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\movietele.it.ini" />
+    <Content Include="epgapp\temp\siteini.pack\movistarplus.es.ini" />
+    <Content Include="epgapp\temp\siteini.pack\mts.rs.ini" />
+    <Content Include="epgapp\temp\siteini.pack\natgeofoxtv.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\nova.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\novaguide_en.gr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\ntvplus.ru.ini" />
+    <Content Include="epgapp\temp\siteini.pack\one.mk.ini" />
+    <Content Include="epgapp\temp\siteini.pack\planeta.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\port.ro.ini" />
+    <Content Include="epgapp\temp\siteini.pack\port.rs.ini" />
+    <Content Include="epgapp\temp\siteini.pack\potv.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\prisma.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\program24.ro.ini" />
+    <Content Include="epgapp\temp\siteini.pack\programatv.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\programm.ard.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\programme-television.org.ini" />
+    <Content Include="epgapp\temp\siteini.pack\programtv.interia.pl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\programtv.onet.pl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\rai.it.ini" />
+    <Content Include="epgapp\temp\siteini.pack\raiplay.it.ini" />
+    <Content Include="epgapp\temp\siteini.pack\rcs-rds.ro.ini" />
+    <Content Include="epgapp\temp\siteini.pack\README.md" />
+    <Content Include="epgapp\temp\siteini.pack\romatv.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\s-tv.ru.ini" />
+    <Content Include="epgapp\temp\siteini.pack\sbb.rs.ini" />
+    <Content Include="epgapp\temp\siteini.pack\sincroguia.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\singteltv.com.sg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\sky.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\skysiertv.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\skysports.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\sporedi.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\sporekrani.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\sport1.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\sportklub.hr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\sportklub.rs.ini" />
+    <Content Include="epgapp\temp\siteini.pack\staseraintv.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\t-home.mk.ini" />
+    <Content Include="epgapp\temp\siteini.pack\teleguide.info.ini" />
+    <Content Include="epgapp\temp\siteini.pack\telekom.mk.ini" />
+    <Content Include="epgapp\temp\siteini.pack\telerama.fr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\telestar.fr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\telez.fr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tr.yo.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\trt.net.tr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tuchkasport.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv-media.at.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv-novini.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.boxbg.net.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.dir.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.etcc.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.i.ua.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.mail.ru.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.orange.fr.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.orf.at.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.sky.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.sms.cz.m.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.ua.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.wp.pl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tv.yandex.ru.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvarenasport.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvdarts.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvdigital.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvgids.nl.index-only.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvgids.nl.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvguide.co.uk.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvguideuk.telegraph.co.uk.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tviz.tv.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvmovie.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvn.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvplus.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvportal.rs.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvshumen.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvspielfilm.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvtoday.de.ini" />
+    <Content Include="epgapp\temp\siteini.pack\tvtv.ch.ini" />
+    <Content Include="epgapp\temp\siteini.pack\uk-sky.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\viasat.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\viasatworld.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\virginmedia.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\vivacom.bg.ini" />
+    <Content Include="epgapp\temp\siteini.pack\vsetv.com.ini" />
+    <Content Include="epgapp\temp\siteini.pack\zingzing.tv.ini" />
+    <Content Include="epgapp\temp\wgmulti.config.json" />
+    <Content Include="requirements.txt" />
+    <Content Include="db.sqlite3" />
+    <Content Include="epgapp\static\content\bootstrap.css" />
+    <Content Include="epgapp\static\content\bootstrap.min.css" />
+    <Content Include="epgapp\static\content\site.css" />
+    <Content Include="epgapp\static\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="epgapp\static\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="epgapp\static\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="epgapp\static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="epgapp\static\scripts\bootstrap.js" />
+    <Content Include="epgapp\static\scripts\bootstrap.min.js" />
+    <Content Include="epgapp\static\scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="epgapp\static\scripts\jquery-1.10.2.js" />
+    <Content Include="epgapp\static\scripts\jquery-1.10.2.min.js" />
+    <Content Include="epgapp\static\scripts\jquery-1.10.2.min.map" />
+    <Content Include="epgapp\static\scripts\jquery.validate-vsdoc.js" />
+    <Content Include="epgapp\static\scripts\jquery.validate.js" />
+    <Content Include="epgapp\static\scripts\jquery.validate.min.js" />
+    <Content Include="epgapp\static\scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="epgapp\static\scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="epgapp\static\scripts\modernizr-2.6.2.js" />
+    <Content Include="epgapp\static\scripts\respond.js" />
+    <Content Include="epgapp\static\scripts\respond.min.js" />
+    <Content Include="epgapp\static\scripts\_references.js" />
+    <Content Include="epgapp\templates\grabbing.html" />
+    <Content Include="epgapp\templates\contact.html" />
+    <Content Include="epgapp\templates\epgapp\channel_list.html" />
+    <Content Include="epgapp\templates\layout.html" />
+    <Content Include="epgapp\templates\registration\login.html" />
+    <Content Include="epgapp\templates\registration\loginpartial.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="readme.html">
+      <SubType>WebBrowser</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.6</Version>
+      <Description>env (Python 3.6 (32-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X86</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Django.targets" />
+  <!-- Specify pre- and post-build commands in the BeforeBuild and 
+       AfterBuild targets below. -->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <AutoAssignPort>True</AutoAssignPort>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

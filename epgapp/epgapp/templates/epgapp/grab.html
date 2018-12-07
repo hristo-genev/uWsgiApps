@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>{{channel.name}}</h1>
+
+<h3>Available siteinis:</h3>
+<table>
+    <thead><tr><th>Siteini</th><th>Site_id</th><th>Run</th></tr></thead>
+{% for siteini in siteinis %}
+    <tr>
+        <td><a href="{{ siteini.siteini.get_absolute_url }}">{{ siteini.siteini.name }}</a> </td>
+        <td>{{siteini.site_id}}</td>
+        <td><input class="startTest" type="submit" value="Run" /></td>
+    </tr>
+{% empty %}
+    <tr><td>No channels yet.</td></tr>
+{% endfor %}
+</table>
+
+{% endblock %}

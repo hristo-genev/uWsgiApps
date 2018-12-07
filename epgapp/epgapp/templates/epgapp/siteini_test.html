@@ -1,0 +1,219 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    #startTest {
+        float: left;
+    }
+svg {
+	max-width: 3em;
+	border-radius: 3px;
+	/*box-shadow: 2px 2px 5px #000;
+	*/background: #fff;
+	fill: none;
+	stroke: #0026ff;
+	stroke-linecap: round;
+	stroke-width: 8%;
+    float:left;
+    display: none;
+
+}
+
+use {
+	stroke: #fff;
+	animation: a 2s linear infinite
+}
+
+@keyframes a { to { stroke-dashoffset: 0px } }
+
+</style>
+
+<h1>Test siteini {{ slug }}</h1>
+
+<br />
+<br />
+<br />
+<h4>Test the <b></b> siteini:</h4>
+
+
+<form method="POST" id="testSiteini">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>Siteini: </td>
+            <td>
+                <select name="siteini_id" id="siteini_id">
+                {% for siteini in siteinis %}
+                    {% if siteini.name == slug %}
+                    <option value="{{ siteini.id }}" selected>{{ siteini.name }}</option>
+                    {% else %}
+                    <option value="{{ siteini.id }}">{{ siteini.name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </td>
+            <td><a id="siteini_edit_link" href="{% url 'admin:epgapp_siteini_change' siteinis.0.id %}">Edit</a> | <a id="siteini_add_link" href="{% url 'admin:epgapp_siteini_add' %}">Add</a></td>
+        </tr>
+        <tr>
+            <td>Site id: </td>
+            <td colspan="2"><input type="text" name="site_id" value="" /></td>
+        </tr>
+        <tr>
+            <td>Channel name: </td>
+            <td colspan="2"><input type="text" name="channel_name" value="" /></td>
+        </tr>
+        <tr>
+            <td>Channel xmltv_id: </td>
+            <td colspan="2"><input type="text" name="xmltv_id" value="" /></td>
+        </tr>
+        <tr>
+            <td>Channel update type: </td>
+            <td colspan="2">
+                <select name="update" id="update">
+                {% for type in update_types %}
+                    <option value="{{ type.0 }}">{{ type.1 }}</option>
+                {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>WebGrab configuration: </td>
+            <td>
+                <select name="webgrab_configuration_id" id="webgrab_configuration_id">
+                {% for config in configs %}
+                    <option value="{{ config.id }}">{{ config.name }}</option>
+                {% endfor %}
+                </select>
+            </td>
+            <td><a id="webgrab_configuration_edit_link" href="{% url 'admin:epgapp_settings_change' configs.0.id %}">Edit</a> | <a id="webgrab_configuration_add_link" href="{% url 'admin:epgapp_settings_add' %}">Add</a></td>
+        </tr>
+        <tr>
+            <td>
+                <br />
+                <input id="startTest" type="submit" value="Start" />            
+                <svg viewBox="-2000 -1000 4000 2000" id="loader">
+                  <path id="inf" d="M354-354A500 500 0 1 1 354 354L-354-354A500 500 0 1 0-354 354z"></path>
+                  <use xlink:href="#inf" stroke-dasharray="1570 5143" stroke-dashoffset="6713px"></use>
+                </svg>
+
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+</form>
+
+<br />
+
+<pre id="status">
+</pre>
+<br />
+
+<a id="logFileUrl" href="" style="display:none;" target="_blank">Log</a>
+
+<pre id="content">
+</pre>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        var statusHandle;
+        var processId = 0;
+
+        var getEpgData = function () {
+            let selectEl = document.getElementById('siteini_id');
+            let siteini = selectEl.options[selectEl.selectedIndex].innerHTML;
+            
+
+            $.ajax({
+                url: 'grabbing/epg/raw/' + siteini,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status) {
+                        $('#content').html(data.raw_epg);
+                        $('#status').html('EPG generated on: ' + data.datatime);
+                    } else {
+                        $('#content').html(data.details);
+                    }
+                    }
+                })
+                .fail(function (data) {
+                    $('#status').html(data.responseText);
+                    $("#startTest").attr('disabled', false);
+                })
+                .always(function (data) {
+                    a = $("#logFileUrl");
+                    a.attr("href", 'grabbing/epg/log/' + siteini)
+                    a.show();
+                    $('#loader').hide();
+                });
+        }
+
+        var generateLinkFromDropdown = function (dropdown, link) {
+            var value = dropdown.options[dropdown.selectedIndex].value;
+            var href = link.attr("href").replace(/\d/, value);
+            link.attr("href", href);
+        }
+
+        var checkGrabbingStatus = function () {
+            $.ajax({
+                url: 'grabbing/run/status/' + processId,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.isRunning) {
+                        $('#status').html('Status: Running...');
+                    } else {
+                        $('#status').html('Status: Not running!');
+                        $("#startTest").attr("disabled", false);
+                        clearTimeout(statusHandle);
+                        getEpgData();
+                    }
+                }
+            })
+            .fail(function (data) {
+                $('#status').html(data.responseText);
+                $("#startTest").attr('disabled', false);
+                clearTimeout(statusHandle);
+            });
+        }
+
+        $("#siteini").change(function () {
+            generateLinkFromDropdown(this, $("#siteini_edit_link"));
+        });
+
+        $("#webgrab_configuration").change(function () {
+            generateLinkFromDropdown(this, $("#webgrab_configuration_edit_link"));
+        });
+
+        $("#testSiteini").submit(function (event) {
+            var form = $(this);
+            $("#startTest").attr('disabled', true);
+            event.preventDefault();
+            document.getElementById('loader').style.display = "block";
+
+            $.ajax({
+                type: 'POST',
+                url: "grabbing/run/test", //{#% url 'run-siteini-test' %}",
+                data: form.serialize(),
+                dataType: 'json'
+            })
+            .done(function(data) {
+                $('#status').html('Status: ' + data.message);
+                processId = data.processId;
+                if (data.details)
+                    $('#content').html(data.details);
+                statusHandle = setInterval(checkGrabbingStatus, 5000);
+            })
+            .fail(function(data) {
+                $('#status').html(data.responseText);
+                $("#startTest").attr('disabled', false);
+            });
+
+        });
+    });
+</script>
+{% endblock %}
