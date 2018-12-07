@@ -1,6 +1,6 @@
 epgapp/epgapp/temp/
 epgapp/epgapp/env/
-epgapp/epgapp/logs/
+epgapp/epgapp/logs/debug.txt
 epgapp/env/
 epgapp/bin/wgmulti.log.txt
 
