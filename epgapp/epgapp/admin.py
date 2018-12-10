@@ -1,6 +1,7 @@
 import requests
 from django.contrib import admin
 from .models import *
+from django.utils.html import format_html
 
 admin.site.site_title = "EpgApp Administration"
 admin.site.site_header = "Electronic Program Guide App Administration"
@@ -55,7 +56,7 @@ admin.site.register(Siteini, SiteiniAdmin)
 MAX_SETTINGS_OBJECTS = 1
 
 class SettingsAdmin(admin.ModelAdmin):
-  list_display = ['name']
+  list_display = ['name', 'show_export_link']
   fieldsets = [
      ('General settings', {'fields': ['name', 'filename', 'update']}),
      ('Timespan settings', {'fields': ['timespan', 'hours', 'keeppastdays']}),
@@ -65,6 +66,19 @@ class SettingsAdmin(admin.ModelAdmin):
      ('Proxy settings', {'fields': ['proxy_server', 'proxy_user', 'proxy_pass']}),
      ('Schedule settings', {'fields': ['start_time', 'run_interval', 'instances', 'timeout', 'convert_times', 'remove_empty', 'only_title', 'report']})
   ]
+
+  def get_urls(self):
+    urls = super().get_urls()
+    custom_urls = [
+    #  url(r'^(?P<id>.+)/export/$',
+    #    self.admin_site.admin_view(self.process_deposit),
+    #    name='account-deposit',),
+    ]
+    return custom_urls + urls
+
+  def show_export_link(self, obj):
+    return format_html('<a href="%s">Export settings to JSON</a>' % reverse('exported-settings', args=[obj.pk]))
+  show_export_link.short_description = 'Export to JSON'
 
   #def has_add_permission(self, request, obj=None):
   #  if self.model.objects.count() >= MAX_SETTINGS_OBJECTS:
