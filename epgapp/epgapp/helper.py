@@ -14,8 +14,10 @@ logger = logging.getLogger(__name__)
 cwd = os.path.abspath(os.path.dirname(__file__))
 temp_path = os.path.join(cwd, 'temp')
 
-def get_config_file(location=None):
+def get_config_file_path(location=None, file_name=None):
   '''
+  Args:
+    Location: the path relative to temp/
   Returns the path to the config file.
   Creates missing directories
   '''
@@ -24,10 +26,13 @@ def get_config_file(location=None):
   if location:
     export_dir = os.path.join(temp_path, location)
 
+  if not file_name:
+    file_name = 'wgmulti.config.json'
+
   if not os.path.isdir(export_dir):
     os.makedirs(export_dir, True)
 
-  return os.path.join(export_dir, 'wgmulti.config.json')
+  return os.path.join(export_dir, file_name)
 
 
 
@@ -83,14 +88,10 @@ def save_config_file(settings=None):
 
   return { 'status': status, 'message': message }
 
-
-def save_settings_file(settings=None, location=None, channels=None):
+def generate_settings_file_content(settings=None, channels=None):
   """
-  Saves settings and channels in config JSON file
+  Export settings and channels to JSON
   """
-  status = False
-  config_file = get_config_file(location)
-
   try:
     serializer = SettingsSerializer(settings)
 
@@ -106,8 +107,26 @@ def save_settings_file(settings=None, location=None, channels=None):
       serializer = ChannelSerializer(channels, many=True)
       data['channels'] = serializer.data
 
+    return data
+
+  except Exception as er:
+
+    message = traceback.format_exc()
+    logger.exception('Error during saving siteinis to disk operation')
+
+  return None
+
+
+def save_settings_file(data, location=None, file_name=None):
+  """
+  Saves settings and channels in config JSON file
+  """
+  status = False
+  config_file_path = get_config_file_path(location, file_name)
+
+  try:
     content = JSONRenderer().render(data, renderer_context={'indent': 2})
-    with open(config_file, 'wb') as w:
+    with open(config_file_path, 'wb') as w:
       w.write(content)
 
     status = True
@@ -122,9 +141,9 @@ def save_settings_file(settings=None, location=None, channels=None):
 
   return { 'status': status, 'message': message }
 
-def get_settings_file():
+def get_settings_file_content(location=None, file_name=None):
   try:
-    return open(get_config_file()).read()
+    return open(get_config_file_path()).read()
   except:
     return {}
 
@@ -247,6 +266,46 @@ def htmlescape(content):
   return content.replace('<', '&lt;').replace('>', '&gt;')
 
 
+def batch_modify_channels(channels, operation='enable'):
+  
+  message = ""
+  enabled  = 0
+  disabled = 0
+  enabled_channel_names = []
+  disabled_channel_names = []
+  disabled_channel_names_grouped = ""
+  enabled_channel_names_grouped = ""
+
+  try:
+    for channel in channels:
+      if operation == 'disable' and channel.enabled:
+        channel.enabled = False
+        disabled_channel_names.append(channel.name)
+        channel.save()
+        disabled += 1
+
+      elif operation == 'enable' and not channel.enabled:
+        channel.enabled = True
+        enabled_channel_names.append(channel.name)
+        channel.save()
+        enabled += 1
+
+    message = "%s channels were %sd." % (disabled, operation)
+
+    if enabled > 0 and enabled < 5:
+      enabled_channel_names_grouped = ",".join(enabled_channel_names[:5])
+      message = message.replace('enabled.', 'enabled (%s)' % enabled_channel_names_grouped)
+
+    if disabled > 0 and disabled < 5:
+      disabled_channel_names_grouped = ", ".join(disabled_channel_names[:5])
+      message = message.replace('disabled.', 'disabled (%s)' % disabled_channel_names_grouped)
+
+  except Exception as e:
+    logger.exception(e)
+    message = str(e)
+  
+  return message
+
 def sync_channels_with_playlist(channels):
 
   names = []
@@ -288,7 +347,7 @@ def sync_channels_with_playlist(channels):
       message = message.replace('enabled.', 'enabled (%s)' % enabled_channel_names_grouped)
 
     if disabled > 0 and disabled < 5:
-      disabled_channel_names_grouped = ",".join(disabled_channel_names_grouped[:5])
+      disabled_channel_names_grouped = ",".join(enabled_channel_names[:5])
       message = message.replace('disabled.', 'disabled (%s)' % disabled_channel_names_grouped)
 
   except Exception as e:

@@ -1,0 +1,11 @@
+2018-10-28 10:02:34.323 [INFO] #####################################################
+2018-10-28 10:02:34.329 [INFO] #                                                   #
+2018-10-28 10:02:34.329 [INFO] #      Wgmulti.exe for WebGrab+Plus by Harry_GG     #
+2018-10-28 10:02:34.329 [INFO] #                                                   #
+2018-10-28 10:02:34.329 [INFO] #####################################################
+2018-10-28 10:02:34.329 [INFO] System: Win32NT
+2018-10-28 10:02:34.329 [INFO] Working Directory: C:\Users\hristo\source\repos\uWsgiApps\epgapp
+2018-10-28 10:02:34.339 [INFO] Config Directory: C:\Users\hristo\source\repos\uWsgiApps\epgapp\epgapp\temp\
+2018-10-28 10:02:34.347 [INFO] Grabbing Temp Directory: C:\Users\hristo\source\repos\uWsgiApps\epgapp\epgapp\temp\data\
+2018-10-28 10:02:34.347 [INFO] Path to WebGrab+Plus.exe: WebGrab+Plus.exe
+2018-10-28 10:02:34.347 [ERROR] WebGrab+Plus.exe does not exist! Exiting.

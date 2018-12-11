@@ -1,3 +1,7 @@
+epgapp/epgapp/logs/
+epgapp/epgapp/logs/*.txt
+epgapp/epgapp/logs/*.json
+
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################

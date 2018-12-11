@@ -31,14 +31,26 @@ class ChannelAdmin(admin.ModelAdmin):
   prepopulated_fields = {'slug': ('name',)}
   preserve_filters    = True
   autocomplete_fields = [ 'category' ]
-  actions             = ['sync_with_playlist']
+  actions             = ['sync_with_playlist', 'batch_enable_channels', 'batch_disable_channels']
 
   def sync_with_playlist(self, request, queryset):
     from .helper import sync_channels_with_playlist
     message = sync_channels_with_playlist(queryset)
     self.message_user(request, message)
 
+  def batch_enable_channels(self, request, queryset):
+    from .helper import batch_modify_channels
+    message = batch_modify_channels(queryset, 'enable')
+    self.message_user(request, message)
+
+  def batch_disable_channels(self, request, queryset):
+    from .helper import batch_modify_channels
+    message = batch_modify_channels(queryset, 'disable')
+    self.message_user(request, message)
+
   sync_with_playlist.short_description = "Sync with playlist (Enable/Disable channels)"
+  batch_enable_channels.short_description = "Enable selected channels"
+  batch_disable_channels.short_description = "Disable selected channels"
 
 admin.site.register(Channel, ChannelAdmin)
 
@@ -77,7 +89,7 @@ class SettingsAdmin(admin.ModelAdmin):
     return custom_urls + urls
 
   def show_export_link(self, obj):
-    return format_html('<a href="%s">Export settings to JSON</a>' % reverse('exported-settings', args=[obj.pk]))
+    return format_html('<a href="%s" class="button">Export</a>' % reverse('exported-settings', args=[obj.pk]))
   show_export_link.short_description = 'Export to JSON'
 
   #def has_add_permission(self, request, obj=None):

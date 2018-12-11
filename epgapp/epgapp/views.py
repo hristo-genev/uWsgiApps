@@ -84,9 +84,10 @@ def run(request, id):
 def exported_settings(request, id=None):
   if id:
     settings = Settings.objects.get(id=id)
-    save_settings_file(settings)
-  raw = get_settings_file()
-  return JsonResponse(raw, safe=False)
+    content = generate_settings_file_content(settings)
+    file_name = 'wgmulti.%s.config.json' % id if id else None
+    save_settings_file(content, None, file_name)
+  return JsonResponse(content, json_dumps_params={'ensure_ascii': False, 'indent': 2})
 
 
 @login_required
