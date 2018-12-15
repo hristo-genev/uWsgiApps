@@ -18,11 +18,6 @@ class Migration(migrations.Migration):
             name='timeshifts',
             options={'ordering': ['offset'], 'verbose_name_plural': 'Timeshifted channels'},
         ),
-        migrations.AddField(
-            model_name='siteini',
-            name='slug',
-            field=models.SlugField(default='', help_text='How it appears in URL', max_length=32, unique=True, verbose_name='Slug'),
-        ),
         migrations.AlterField(
             model_name='timeshifts',
             name='offset',

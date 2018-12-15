@@ -19,7 +19,7 @@ POSTPROCESS_TYPES = [
 class Siteini(models.Model):
   import uuid
   name     = models.CharField('Name of siteini file', max_length=32)
-  slug     = models.SlugField('Slug', unique=True, help_text='How it appears in URL')
+  slug     = models.SlugField(unique=False, default=uuid.uuid1, help_text='How it appears in URL')
   enabled  = models.BooleanField(default=True)
   content  = models.TextField()
   created  = models.DateTimeField(auto_now_add=True)
@@ -75,6 +75,7 @@ class Channel(models.Model):
   created     = models.DateTimeField(auto_now_add=True)
   modified    = models.DateTimeField(auto_now=True)
   category    = models.ManyToManyField(Category, default="", blank=True)
+  #alt_names   = models.OneToOneField(AlternativeName, on_delete=models.CASCADE, default="", blank=True)
   #broadcaster= models.ForeignKey(Broadcaster, verbose_name='Broadcaster', on_delete=models.SET_DEFAULT, default="", blank=True, null=True)
 
   def get_absolute_url(self):
@@ -97,6 +98,17 @@ class Channel(models.Model):
   class Meta: 
     ordering = ['-name']
     verbose_name_plural = '       Channels'
+
+
+class AlternativeName(models.Model):
+  channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
+  name    = models.CharField(max_length=64, blank=True)
+
+  def __str__(self):
+    return self.name
+
+  class Meta:
+    verbose_name_plural = 'Alternative channel names'
 
 
 class Timeshifts(models.Model):

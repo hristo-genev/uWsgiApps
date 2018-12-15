@@ -15,10 +15,14 @@ admin.site.register(Timeshifts)
 class TimeshiftsInline(admin.TabularInline):
   model = Timeshifts
   extra = 0
+  
+class AlternativeNameInline(admin.TabularInline):
+  model = AlternativeName
+  extra = 0
 
 class CategoryAdmin(admin.ModelAdmin):
   search_fields = ['name']
-admin.site.register(Category,CategoryAdmin)
+admin.site.register(Category, CategoryAdmin)
 
 class ChannelAdmin(admin.ModelAdmin):
   list_display_links  = [ 'name', 'xmltv_id', 'slug' ]
@@ -27,7 +31,7 @@ class ChannelAdmin(admin.ModelAdmin):
   list_editable       = [ 'enabled' ]
   list_filter         = [ 'category' ]
   list_per_page       = 50
-  inlines             = [ GrabbersInline, TimeshiftsInline ]
+  inlines             = [ GrabbersInline, TimeshiftsInline, AlternativeNameInline ]
   prepopulated_fields = {'slug': ('name',)}
   preserve_filters    = True
   autocomplete_fields = [ 'category' ]
@@ -56,9 +60,10 @@ admin.site.register(Channel, ChannelAdmin)
 
 
 class SiteiniAdmin(admin.ModelAdmin):
+  list_display_links  = ['name', 'slug']
   search_fields       = ['name']
   prepopulated_fields = {'slug': ('name',)}
-  list_display        = ('name', 'enabled', 'modified', 'created')
+  list_display        = ('name', 'slug', 'enabled', 'modified', 'created')
   ordering            = ['name']
   list_per_page       = 20
 
