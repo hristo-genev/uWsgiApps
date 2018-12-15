@@ -6,7 +6,7 @@ server {
   location = /favicon.ico { access_log off; log_not_found off; }
 
   location /static/ {
-    root /home/g/uWsgiApps/epgapp/epgapp/;
+    root /home/g/uWsgiApps/epgapp/;
   }
 
   location /downloads/ {
