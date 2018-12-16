@@ -19,7 +19,7 @@ POSTPROCESS_TYPES = [
 class Siteini(models.Model):
   import uuid
   name     = models.CharField('Name of siteini file', max_length=32)
-  slug     = models.SlugField(unique=False, default=uuid.uuid1, help_text='How it appears in URL')
+  slug     = models.SlugField('Slug', unique=False, default="", help_text='How it appears in URL')
   enabled  = models.BooleanField(default=True)
   content  = models.TextField()
   created  = models.DateTimeField(auto_now_add=True)

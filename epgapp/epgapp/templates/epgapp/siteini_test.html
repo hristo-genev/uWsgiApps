@@ -130,7 +130,7 @@ use {
             
 
             $.ajax({
-                url: 'grabbing/epg/raw/' + siteini,
+                url: '/grabbing/epg/raw/' + siteini,
                 dataType: 'json',
                 success: function (data) {
                     if (data.status) {
@@ -147,7 +147,7 @@ use {
                 })
                 .always(function (data) {
                     a = $("#logFileUrl");
-                    a.attr("href", 'grabbing/epg/log/' + siteini)
+                    a.attr("href", '/grabbing/epg/log/' + siteini)
                     a.show();
                     $('#loader').hide();
                 });
@@ -161,7 +161,7 @@ use {
 
         var checkGrabbingStatus = function () {
             $.ajax({
-                url: 'grabbing/run/status/' + processId,
+                url: '/grabbing/run/status/' + processId,
                 dataType: 'json',
                 success: function (data) {
                     if (data.isRunning) {
@@ -197,7 +197,7 @@ use {
 
             $.ajax({
                 type: 'POST',
-                url: "grabbing/run/test", //{#% url 'run-siteini-test' %}",
+                url: "run/", //{#% url 'run-siteini-test' %}",
                 data: form.serialize(),
                 dataType: 'json'
             })

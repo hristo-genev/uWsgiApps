@@ -71,9 +71,9 @@ def run(request, id):
     result = {}
 
     settings = Settings.objects.get(id=id)
-
+    data = generate_settings_file_content(settings)
     result['config']   = save_config_file(settings)
-    result['settings'] = save_settings_file(settings)
+    result['settings'] = save_settings_file(data)
     result['siteinis'] = save_siteinis()
     result['grabbing'] = start_grabbing()
 
@@ -193,8 +193,8 @@ def grab(request, slug):
 
 
 @login_required
-def siteini_test(request, slug=None):
-
+def siteini_test(request):
+  slug = request.META.get('HTTP_REFERER').split('/')[-2]
   siteinis = Siteini.objects.filter(enabled=True)
   configs = Settings.objects.all();
 
@@ -212,27 +212,39 @@ def siteini_test(request, slug=None):
 @login_required
 def run_siteini_test(request):
 
-  siteini_id = request.POST.get('siteini_id')
-  xmltv_id   = request.POST.get('xmltv_id')
-  site_id    = request.POST.get('site_id')
-  name       = request.POST.get('channel_name')
-  config_id  = request.POST.get('webgrab_configuration_id')
+  if request.method == 'GET':
+    return JsonResponse({'status': False, 'message': 'GET request not supported for this operation', 'details': 'Do POST' })
 
-  channel    = { 'name': name, 'xmltv_id': xmltv_id, 'update': 'i' }
+  siteini_id  = request.POST['siteini_id']
+  name        = request.POST['channel_name']
+  xmltv_id    = request.POST['xmltv_id']
+  site_id     = request.POST['site_id']
+  update_type = request.POST['update']
+  config_id   = request.POST['webgrab_configuration_id']
+
+  if name == '':
+    name = 'TESTNAME'
+  if xmltv_id == '':
+    xmltv_id = 'TESTID'
+  if update_type == '':
+    update_type = 'i'
+
+  channel    = { 'name': name, 'xmltv_id': xmltv_id, 'update': update_type }
 
   try:
     siteini  = Siteini.objects.get(id=siteini_id)
     location   = os.path.join(temp_path, 'data', siteini.name)
     channel['siteinis'] = [{ 'name': siteini.name, 'site_id': site_id}]
-
-    save_config_file(config_id, location, channel)
+    settings = Settings.objects.get(id=config_id)
+    data = generate_settings_file_content(settings, channel)
+    save_settings_file(data, location)
     save_siteini(siteini, location)
     res = start_grabbing(location)
     return JsonResponse(res)
 
   except Exception as ex:
     logger.exception(str(ex))
-    return JsonResponse({'status': false, 'message': ex, 'details': traceback.format_exc() })
+    return JsonResponse({'status': False, 'message': ex, 'details': traceback.format_exc() })
 
 
 @login_required
@@ -259,7 +271,7 @@ def get_siteini_epg(request, siteini):
   except Exception as er:
     status = False
     logger.exception(er)
-    details = er
+    details = str(er)
 
   return JsonResponse( { 'status': status, 'raw_epg': content, 'datatime': dt, 'details': details} )
 

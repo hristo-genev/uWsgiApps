@@ -111,7 +111,7 @@ def generate_settings_file_content(settings=None, channels=None):
 
   except Exception as er:
 
-    message = traceback.format_exc()
+    #message = traceback.format_exc()
     logger.exception('Error during saving siteinis to disk operation')
 
   return None
@@ -132,12 +132,10 @@ def save_settings_file(data, location=None, file_name=None):
     status = True
     message = 'Settings successfully saved on disk!'
 
-    #assert None == True
-
   except Exception as er:
-
-    message = traceback.format_exc()
+    message = str(er) 
     logger.exception('Error during saving siteinis to disk operation')
+    logger.exception(traceback.format_exc())
 
   return { 'status': status, 'message': message }
 
@@ -164,6 +162,7 @@ def save_siteinis():
     Save selected siteini or all on the disk
   """
   status = False
+  details = ''
   siteinis_path = os.path.join(temp_path, 'siteini.pack')
 
   try:
@@ -177,10 +176,11 @@ def save_siteinis():
 
   except Exception as er:
 
-    message = str(ex)
+    message = str(er)
+    details = traceback.format_exc()
     logger.exception('Error during saving siteinis to disk operation')
 
-  return { 'status': status, 'message': message }
+  return { 'status': status, 'message': message, 'details': details }
 
 def start_grabbing(configDir=None):
   """
@@ -190,7 +190,7 @@ def start_grabbing(configDir=None):
 
   """
   status  = False
-  details = ""
+  details = ''
   pid     = -1
 
   try:
