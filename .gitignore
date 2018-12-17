@@ -1,6 +1,5 @@
 epgapp/epgapp/temp/
 epgapp/epgapp/env/
-epgapp/epgapp/bin/wgmulti.exe.config
 epgapp/epgapp/logs/*
 epgapp/env/
 epgapp/bin/wgmulti.log.txt
