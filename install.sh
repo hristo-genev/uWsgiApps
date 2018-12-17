@@ -27,6 +27,13 @@ link=${PWD}/service/uwsgi.service
 sudo ln -si $link /etc/systemd/system/
 echo `ls -la /etc/systemd/system/uwsgi.service`
 
+echo "Creating temp folder"
+mkdir -R epgapp/epgapp/temp/data/
+chmod 755 epgapp/epgapp/temp/
+chmod 755 epgapp/epgapp/temp/data/
+chmod +x epgapp/epgapp/bin/wgmulti.exe
+chmod +x epgapp/epgapp/bin/WebGrab+Plus.exe
+
 
 echo "**************************************************"
 echo "To start the service run sudo service uwsgi start"

@@ -193,7 +193,8 @@ use {
             var form = $(this);
             $("#startTest").attr('disabled', true);
             event.preventDefault();
-            document.getElementById('loader').style.display = "block";
+            var loader = document.getElementById('loader');
+            loader.style.display = "block";
 
             $.ajax({
                 type: 'POST',
@@ -207,10 +208,12 @@ use {
                 if (data.details)
                     $('#content').html(data.details);
                 statusHandle = setInterval(checkGrabbingStatus, 5000);
+                loader.style.display = "none";
             })
             .fail(function(data) {
                 $('#status').html(data.responseText);
                 $("#startTest").attr('disabled', false);
+                loader.style.display = "none";
             });
 
         });

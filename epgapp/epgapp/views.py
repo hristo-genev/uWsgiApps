@@ -236,6 +236,7 @@ def run_siteini_test(request):
     location   = os.path.join(temp_path, 'data', siteini.name)
     channel['siteinis'] = [{ 'name': siteini.name, 'site_id': site_id}]
     settings = Settings.objects.get(id=config_id)
+    save_config_file(settings)
     data = generate_settings_file_content(settings, channel)
     save_settings_file(data, location)
     save_siteini(siteini, location)

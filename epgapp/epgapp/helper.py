@@ -31,6 +31,7 @@ def get_config_file_path(location=None, file_name=None):
 
   if not os.path.isdir(export_dir):
     os.makedirs(export_dir, True)
+    os.chmod(export_dir, 0o777)
 
   return os.path.join(export_dir, file_name)
 
@@ -83,8 +84,8 @@ def save_config_file(settings=None):
 
   except Exception as er:
 
-    message = traceback.format_exc()
-    logger.exception('Error during saving siteinis to disk operation')
+    message = str(er)
+    logger.exception('Error during saving wgmulti.config.xml on disk')
 
   return { 'status': status, 'message': message }
 
@@ -133,7 +134,7 @@ def save_settings_file(data, location=None, file_name=None):
     message = 'Settings successfully saved on disk!'
 
   except Exception as er:
-    message = str(er) 
+    message = str(er)
     logger.exception('Error during saving siteinis to disk operation')
     logger.exception(traceback.format_exc())
 
@@ -153,6 +154,7 @@ def save_siteini(siteini, location):
   """
   if not os.path.isdir(location):
     os.makedirs(location, True)
+    os.chmod(location, 0o777)
 
   with open(os.path.join(location, siteini.name + '.ini'), 'wb') as w:
     w.write(siteini.content.encode('utf-8'))
@@ -177,7 +179,7 @@ def save_siteinis():
   except Exception as er:
 
     message = str(er)
-    details = traceback.format_exc()
+    #details = traceback.format_exc()
     logger.exception('Error during saving siteinis to disk operation')
 
   return { 'status': status, 'message': message, 'details': details }
@@ -226,28 +228,27 @@ def start_grabbing(configDir=None):
 
   except Exception as er:
     message = str(er)
-    details = traceback.format_exc()
+    #details = traceback.format_exc()
     logger.exception('Error during start_grabbing()')
 
-  return { 'status': status, 'message': message, 'processId': id, 'details': details} #, 'stdout': stdout.decode("utf-8")}
+  return { 'status': status, 'message': message, 'processId': id} #, 'stdout': stdout.decode("utf-8")}
 
 
 def get_report():
-
+  details = ''
+  status = False
+  report = {}
   try:
-
-    details = ''
-    status = False
-    report = {}
     import json
     with open (os.path.join(APP_DIR, 'logs', 'wgmulti.report.json'), encoding='utf-8') as r:
       report = json.load(r)
     status = True
 
   except Exception as er:
-    details = traceback.format_exc()
+    message = str(er)
+    #details = traceback.format_exc()
 
-  return {'status': status, 'details': details, 'report': report}
+  return {'status': status, 'message': message, 'details': details, 'report': report}
 
 def get_raw_epg(siteini=None):
   content = ''
