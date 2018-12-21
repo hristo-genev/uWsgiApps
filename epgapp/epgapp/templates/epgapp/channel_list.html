@@ -3,12 +3,59 @@
 {% block content %}
 
 <h1>Channels</h1>
-<ul>
-{% for channel in object_list %}
-    <li><a href="{{ channel.get_absolute_url }}">{{ channel.name }}</a></li>
-{% empty %}
-    <li>No channels yet.</li>
-{% endfor %}
-</ul>
+
+Found {{ object_list.count }} enabled channels.
+<br />
+<br />
+
+<form id="searchform" action="{% url 'channel-list' %}" method="GET" accept-charset="utf-8">
+    <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+    <input class="" type="submit" value="Submit"/>
+    <!--i class="fa fa-search"></i!-->
+</form>
+<br />
+
+<table>
+    <thead>
+        <tr>
+            <th>Channel name</th>
+            <th>Xmltv id</th>
+            <th>Number of siteinis</th>
+            <th>Edit channel</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for channel in object_list %}
+        {% if channel.enabled %}
+        <tr>
+            <td><a href="{{ channel.get_absolute_url }}">{{ channel.name }}</a></td>
+            <td>{{ channel.xmltv_id }}</td>
+            <td>{{ channel.siteinis.count }}</td>
+            <td><a href="{% url 'admin:epgapp_channel_change' channel.id %}">Edit</a></td>
+        </tr>
+        {% endif %}
+    {% empty %}
+        <tr><td colspan="3">No stats yet.</td></tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% if is_paginated %}
+    <div class="pagination">
+        <span class="page-links">
+            {% if page_obj.has_previous %}
+                <a href="{% url 'channel-list' %}?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span class="page-current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="{% url 'channel-list' %}?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
 
 {% endblock %}

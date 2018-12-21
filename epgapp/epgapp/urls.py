@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^$', epgapp.views.ChannelListView.as_view(), name='channel-list'),
     url(r'^channel/(?P<slug>.+)/grab/$', epgapp.views.grab, name='grab'),
     url(r'^channel/(?P<slug>.+?)/$', epgapp.views.ChannelDetailView.as_view(), name='channel-detail'),
+    #url(r'^search/$', view=search, name = 'channel-search-view'),
     url(r'^siteinis/$', epgapp.views.SiteiniListView.as_view(), name='siteini-list'),
     url(r'^siteinis/test/$', epgapp.views.siteini_test, name='siteini-test'),
     url(r'^siteinis/test/run/', epgapp.views.run_siteini_test, name='run-siteini-test'),
@@ -34,5 +35,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^settings/*$', epgapp.views.settings, name='settings-url'),
     url(r'^settings/raw/(?P<id>.+?)$', epgapp.views.exported_settings, name='exported-settings'),
-    url(r'^settings/raw/$', epgapp.views.exported_settings, name='exported-last-settings')
+    url(r'^settings/raw/$', epgapp.views.exported_settings, name='exported-last-settings'),
 ]

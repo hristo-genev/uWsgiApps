@@ -122,12 +122,20 @@ class ChannelListView(ListView):
 
     model = Channel
     paginate_by = 50
+    ordering = ['created']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()
         return context
 
+    def get_queryset(self):
+      result = Channel.objects.filter(enabled=True)
+      q = self.request.GET.get('q')
+      if q:
+        result = result.filter(name__icontains=q)
+
+      return result
 
 class ChannelDetailView(DetailView):
 
@@ -153,16 +161,24 @@ class SiteiniListView(ListView):
         return context
 
     def get_queryset(self):
-        try:
-            name = self.kwargs['name']
-        except:
-            name = ''
+      result = super(SiteiniListView, self).get_queryset()
+      q = self.request.GET.get('q')
+      if q:
+        result = result.filter(name__icontains=q)
+    
+      return result
 
-        if (name != ''):
-            object_list = self.model.objects.filter(name__icontains = name)
-        else:
-            object_list = self.model.objects.all()
-        return object_list
+    #def get_queryset(self):
+    #    try:
+    #        name = self.kwargs['name']
+    #    except:
+    #        name = ''
+
+    #    if (name != ''):
+    #        object_list = self.model.objects.filter(name__icontains = name)
+    #    else:
+    #        object_list = self.model.objects.all()
+    #    return object_list
 
 class SiteiniDetailView(DetailView):
 

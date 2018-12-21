@@ -3,13 +3,43 @@
 {% block content %}
 
 <h1>Siteinis</h1>
-<ul>
-{% for o in object_list %}
-    <li><a href="{{ o.get_absolute_url }}">{{ o.name }}</a></li>
-{% empty %}
-    <li>No siteinis yet.</li>
-{% endfor %}
-</ul>
+<form id="searchform" action="{% url 'siteini-list' %}" method="GET" accept-charset="utf-8">
+    <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+    <input class="" type="submit" value="Submit"/>
+    <!--i class="fa fa-search"></i!-->
+</form>
+<br />
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Siteini name</th>
+            <th>Edit siteini content</th>
+            <th>Test grabbing</th>
+            <th>Created on</th>
+            <th>Modified on</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for o in object_list %}
+        {% if o.enabled %}
+        <tr>
+            <td><a href="{{ o.get_absolute_url }}">{{ o.name }}</a></td>
+            <td><a href="{% url 'admin:epgapp_siteini_change' o.id %}">Edit</a></td>
+            <td><a href="{% url 'siteini-test' %}">Test</a></td>
+            <td>{{ o.created }}</td>
+            <td>{{ o.modified }}</td>
+        </tr>
+        {% endif %}
+    {% empty %}
+        <tr><td colspan="3">No stats yet.</td></tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
 {% if is_paginated %}
     <div class="pagination">
         <span class="page-links">
