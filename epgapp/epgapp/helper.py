@@ -250,17 +250,17 @@ def get_report():
 
   return {'status': status, 'message': message, 'details': details, 'report': report}
 
-def get_raw_epg(siteini=None):
+def get_raw_epg(raw_epg_file_path):
   content = ''
   try:
-    if siteini:
-      raw_epg_file_path = os.path.join(APP_DIR, 'temp/data/', siteini, 'epg.xml')
-    else:
-      raw_epg_file_path = os.path.join(APP_DIR, 'temp', 'epg.xml')
+    #if siteini:
+    #  raw_epg_file_path = os.path.join(APP_DIR, 'temp/data/', siteini, 'epg.xml')
+    #else:
+    #  raw_epg_file_path = os.path.join(APP_DIR, 'temp', 'epg.xml')
     content = open(raw_epg_file_path, 'r', encoding='utf-8').read()
   except Exception as er:
     logger.exception(er)
-
+    content = str(er)
   return content
 
 def htmlescape(content):
