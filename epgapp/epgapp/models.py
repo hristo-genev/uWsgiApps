@@ -206,7 +206,7 @@ class Settings(models.Model):
   run_interval  = models.IntegerField('Run every N days', default=1)
   instances     = models.IntegerField('Number of processes', default=1, 
                                          help_text='The maximum number of WebGrab processes running at the same time')
-  timeout       =  models.IntegerField('Process timeout', default=40, help_text='Minutes to wait before killing the WebGrab process')
+  timeout       = models.IntegerField('Process timeout', default=40, help_text='Minutes to wait before killing the WebGrab process')
   convert_times = models.BooleanField('Convert times to local time', default=True)
   remove_empty  = models.BooleanField('Remove channels with no programmes', default=True)
   only_title    = models.BooleanField('Copy only title of timeshifted channels', default=True)

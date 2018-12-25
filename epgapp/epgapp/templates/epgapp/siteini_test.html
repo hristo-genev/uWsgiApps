@@ -107,10 +107,11 @@ use {
 
 <pre id="status">
 </pre>
+
+<a id="logFileUrl" href="" style="display:none;" target="_blank">Log from last test</a>
 <br />
 
-<a id="logFileUrl" href="" style="display:none;" target="_blank">Log</a>
-
+EPG:
 <pre id="content">
 </pre>
 
@@ -137,18 +138,19 @@ use {
                     } else {
                         $('#content').html(data.details);
                     }
-                    }
-                })
-                .fail(function (data) {
-                    $('#status').html(data.responseText);
-                    $("#startTest").attr('disabled', false);
-                })
-                .always(function (data) {
-                    a = $("#logFileUrl");
-                    a.attr("href", '/grabbing/epg/log/' + siteini)
-                    a.show();
-                    $('#loader').hide();
-                });
+                }
+            })
+            .fail(function (data) {
+                $('#status').html(data.responseText);
+                $("#startTest").attr('disabled', false);
+            })
+            .always(function (data) {
+                a = $("#logFileUrl");
+                a.attr("href", '/grabbing/epg/log/' + siteini)
+                a.show();
+                $('#loader').hide();
+                loader.style.display = "none";
+            });
         }
 
         var generateLinkFromDropdown = function (dropdown, link) {
@@ -206,7 +208,6 @@ use {
                 if (data.details)
                     $('#content').html(data.details);
                 statusHandle = setInterval(checkGrabbingStatus, 5000);
-                loader.style.display = "none";
             })
             .fail(function(data) {
                 $('#status').html(data.responseText);

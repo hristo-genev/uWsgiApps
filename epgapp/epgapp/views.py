@@ -57,7 +57,7 @@ def grabbing(request):
             'isRunning': isRunning(),
             'configs': Settings.objects.all(),
             'nChannels': len(Channel.objects.filter(enabled=True)),
-            'lastGrabbingTime': '00:00:00'
+            'lastGrabbingTime': get_last_grabbing_time()
         }
     )
 
@@ -109,11 +109,11 @@ def settings(request):
     message = 'Successfully saved settings!'
 
   return render(
-    request, 
-    'settings.html', 
-    { 
-      'form': form.as_table(), 
-      'message': message 
+    request,
+    'settings.html',
+    {
+      'form': form.as_table(),
+      'message': message
     }
   )
 
@@ -122,20 +122,33 @@ class ChannelListView(ListView):
 
     model = Channel
     paginate_by = 50
-    ordering = ['created']
+    ordering = ['-created']
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['now'] = timezone.now()
-        return context
+      context = super().get_context_data(**kwargs)
+      context['now'] = timezone.now()
+      return context
 
     def get_queryset(self):
-      result = Channel.objects.filter(enabled=True)
+      channels = Channel.objects.filter(enabled=True)
       q = self.request.GET.get('q')
       if q:
-        result = result.filter(name__icontains=q)
+        channels = channels.filter(name__icontains=q)
 
-      return result
+      channels = channels.order_by('created')
+
+      channels_in_report = get_report()['report']['channels']
+      for channel in channels:
+        for ch in channels_in_report:
+          if ch['name'] == channel.name:
+            channel.programsCount = ch.get('programsCount')
+            channel.siteiniName = ch.get('siteiniName')
+            channel.siteiniIndex = ch.get('siteiniIndex')
+            channel.firstShowStartsAt = ch.get('firstShowStartsAt')
+            channel.lastShowStartsAt = ch.get('lastShowStartsAt')
+            continue
+
+      return channels
 
 class ChannelDetailView(DetailView):
 
@@ -165,7 +178,7 @@ class SiteiniListView(ListView):
       q = self.request.GET.get('q')
       if q:
         result = result.filter(name__icontains=q)
-    
+
       return result
 
     #def get_queryset(self):
@@ -252,6 +265,7 @@ def run_siteini_test(request):
     location   = os.path.join(temp_path, 'data', siteini.name)
     channel['siteinis'] = [{ 'name': siteini.name, 'site_id': site_id}]
     settings = Settings.objects.get(id=config_id)
+    settings.report = False # Disable report for single channel grabbing
     save_config_file(settings)
     data = generate_settings_file_content(settings, channel)
     save_settings_file(data, location)
@@ -266,8 +280,11 @@ def run_siteini_test(request):
 
 @login_required
 def status(request, processId):
+  details = ''
   status = isRunning(processId)
-  return JsonResponse( { 'isRunning': status } )
+  if status:
+    details = get_running_processes_details()
+  return JsonResponse( { 'isRunning': status, 'details': details } )
 
 
 @login_required
@@ -317,7 +334,7 @@ def get_epg_report(request):
   return JsonResponse( get_report() )
 
 @login_required
-def stats(request):
+def epg(request):
 
   try:
     report = get_report()['report']
@@ -334,3 +351,9 @@ def stats(request):
       'report': report,
     }
   )
+
+
+
+def regenerate(request):
+  (status, details) = regenerate_epg()
+  return JsonResponse( { 'status': status, 'details': details} )

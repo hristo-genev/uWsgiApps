@@ -15,7 +15,7 @@ admin.site.register(Timeshifts)
 class TimeshiftsInline(admin.TabularInline):
   model = Timeshifts
   extra = 0
-  
+
 class AlternativeNameInline(admin.TabularInline):
   model = AlternativeName
   extra = 0
@@ -25,10 +25,10 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 class ChannelAdmin(admin.ModelAdmin):
-  list_display_links  = [ 'name', 'xmltv_id', 'slug' ]
+  list_display_links  = [ 'name']
   search_fields       = [ 'name', 'category__name' ]
   list_display        = [ 'name', 'xmltv_id', 'slug', 'enabled', 'get_siteinis', 'get_timeshifts' ]
-  list_editable       = [ 'enabled' ]
+  list_editable       = [ 'enabled', 'xmltv_id', 'slug' ]
   list_filter         = [ 'category' ]
   list_per_page       = 50
   inlines             = [ GrabbersInline, TimeshiftsInline, AlternativeNameInline ]
@@ -36,6 +36,7 @@ class ChannelAdmin(admin.ModelAdmin):
   preserve_filters    = True
   autocomplete_fields = [ 'category' ]
   actions             = ['sync_with_playlist', 'batch_enable_channels', 'batch_disable_channels']
+  ordering            = ['created']
 
   def sync_with_playlist(self, request, queryset):
     from .helper import sync_channels_with_playlist
@@ -112,7 +113,7 @@ admin.site.register(Settings,SettingsAdmin)
 
 class GrabbersAdmin(admin.ModelAdmin):
   list_display        = ['channel', 'siteini', 'site_id']
-  search_fields       = ['channel', 'siteini', 'site_id']
+  search_fields       = ['channel', 'siteini__name', 'site_id']
   list_per_page       = 20
   list_filter         = ['siteini']
   #autocomplete_fields = ['name']

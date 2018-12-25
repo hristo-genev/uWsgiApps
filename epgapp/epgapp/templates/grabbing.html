@@ -58,6 +58,13 @@ Select WebGrab options and click Run:
 <button id="runAll">Run</button> 
 <button id="cancelGrabbing">Cancel</button> 
 
+<br />
+<br />
+Regenerate EPG (combine all channel guides in case of corrections):
+<br/ >
+<button id="regenerateEpg">Regenerate</button>
+<br />
+
 <svg viewBox="-2000 -1000 4000 2000" id="loader">
     <path id="inf" d="M354-354A500 500 0 1 1 354 354L-354-354A500 500 0 1 0-354 354z"></path>
     <use xlink:href="#inf" stroke-dasharray="1570 5143" stroke-dashoffset="6713px"></use>
@@ -69,37 +76,30 @@ Select WebGrab options and click Run:
 <pre id="status">
 </pre>
 
-<table id="report">
-<thead>
-  <tr>
-    <th>Name</th>
-    <th>Siteini</th>
-    <th>Programs</th>
-    <th>Siteini #</th>
-    <th>First show date</th>
-    <th>Last show date</th>
-  </tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+<pre id="processes">
+</pre>
 
 {% endblock %}
 
 {% block scripts %}
   <script>
-    $( document ).ready(function() {
-        setInterval(checkGrabbingStatus, 5000);
-    });
-    var process = 'wgmulti.exe';
-    var reportRetrieved = false;
+$( document ).ready(function() {
+      var loader = $("#loader");
+      var process = "wgmulti.exe";
+      var processes = $("#processes");
+      var status = $("#status");
+      var loader = $("#loader");
+      var runAll = $("#runAll");
+      var regenerateEpg = $("#regenerateEpg");
+      var cancelGrabbing = $("#cancelGrabing");
+      var reportRetrieved = false;
+      setInterval(checkGrabbingStatus, 5000);
 
     function getReport() {
         $.ajax({
-            url: 'grabbing/epg/report',
-            dataType: 'json',
+            url: "grabbing/epg/report",
+            dataType: "json",
             success: function (data) {
-                var status = $("#status");
                 status.empty();
                 if (data.status) {
                   status.append("Last grabbing report:<br>Total grabbed channels: " + data.report.total + "<br>");
@@ -109,16 +109,6 @@ Select WebGrab options and click Run:
                   status.append("Generated on: " + data.report.generatedOn + "<br>");
                   status.append("EPG file size: " + data.report.fileSize + " (bytes) <br>");
                   status.append("EPG file md5 hash: " + data.report.md5hash + "<br>");
-                  //data.report.channels.forEach(function(channel) {
-                  //  content = "<tr><td>"+channel.name+"</td>";
-                  //  content += "<td>"+channel.siteiniName+"</td>";
-                  //  content += "<td>"+channel.programsCount+"</td>";
-                  //  content += "<td>"+channel.siteiniIndex+"</td>";
-                  //  content += "<td>"+channel.firstShowStartsAt+"</td>";
-                  //  content += "<td>"+channel.lastShowStartsAt+"</td></tr>";
-                  //  $("#report > tbody").append(content);
-                  //});
-                  $("#report").show();
                 } else {
                   status.append("Error: " + data.details);
                 }
@@ -133,16 +123,18 @@ Select WebGrab options and click Run:
             dataType: 'json',
             success: function (data) {
                 if (data.isRunning) {
-                    $("#runAll").attr("disabled", true);
-                    $("#cancelGrabbing").show();
-                    $("#loader").show();
+                    runAll.attr("disabled", true);
+                    processes.text(data.details);
+                    cancelGrabbing.show();
+                    loader.show();
                 } else {
-                    $("#runAll").attr("disabled", false);
+                    runAll.attr("disabled", false);
                     process = 'wgmulti.exe';
-                    $("#cancelGrabbing").hide();
-                    $("#loader").hide();
-                    if (!reportRetrieved)
-                      getReport();
+                    cancelGrabbing.hide();
+                    loader.hide();
+                    regenerateEpg.show();
+                    //if (!reportRetrieved)
+                    //  getReport();
                 }
             }
         });
@@ -150,11 +142,13 @@ Select WebGrab options and click Run:
 
     $("#runAll").click(function (e) {
         $(this).attr("disabled", true);
-        $("#status").empty();
+        status.empty();
+        processes.empty();
         selectEl = document.getElementById('webgrab_configuration_id');
         id = selectEl.options[selectEl.selectedIndex].value;
+        regenerateEpg.hide();
         $.ajax({
-            url: 'grabbing/run/all/' + id,
+            url: "grabbing/run/all/" + id,
             dataType: 'json',
             success: function (data) {
                 let status = $('#status');
@@ -166,15 +160,42 @@ Select WebGrab options and click Run:
                 process = data.grabbing.processId;
 
                 if (data.grabbing.status) {
-                    $('#cancelGrabbing').show();
-                    $('#loader').show();
+                    cancelGrabbing.show();
+                    loader.show();
                 }
-                else {
-                    $('#loader').hide();
-                    $('#cancelGrabbing').hide();
+                else 
+                {
+                    loader.hide();
+                    cancelGrabbing.hide();
+                    regenerateEpg.show();
+
                 }
             }
       });
     });
+
+   regenerateEpg.click(function (e) {
+        $(this).attr("disabled", true);
+        loader.show();
+        status.empty();
+        processes.empty();
+        $.ajax({
+            url: "/grabbing/epg/regenerate",
+            dataType: 'json',
+            success: function (data) 
+            {
+                status.append(data.details);
+                loader.hide();
+                regenerateEpg.attr("disabled", false);
+            },
+            error: function() {
+              status.append(data.details)
+              regenerateEpg.attr("disabled", false);
+            }
+        });
+    });
+
+});
+
   </script>
 {% endblock %}

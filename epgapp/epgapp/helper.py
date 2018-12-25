@@ -186,7 +186,7 @@ def save_siteinis():
 
 def start_grabbing(configDir=None):
   """
-  Start wgmulti for given config folder. 
+  Start wgmulti for given config folder.
   If config folder is not provided, the default one is used.
   Returns an object containing the ID of the started process - None if error occurs
 
@@ -235,15 +235,15 @@ def start_grabbing(configDir=None):
 
 
 def get_report():
+  message = ''
   details = ''
   status = False
-  report = {}
+  report = None
   try:
     import json
     with open (os.path.join(APP_DIR, 'logs', 'wgmulti.report.json'), encoding='utf-8') as r:
       report = json.load(r)
     status = True
-
   except Exception as er:
     message = str(er)
     #details = traceback.format_exc()
@@ -268,7 +268,7 @@ def htmlescape(content):
 
 
 def batch_modify_channels(channels, operation='enable'):
-  
+
   message = ""
   enabled  = 0
   disabled = 0
@@ -304,7 +304,7 @@ def batch_modify_channels(channels, operation='enable'):
   except Exception as e:
     logger.exception(e)
     message = str(e)
-  
+
   return message
 
 def sync_channels_with_playlist(channels):
@@ -332,8 +332,8 @@ def sync_channels_with_playlist(channels):
           disabled_channel_names.append(channel.name)
           channel.save()
           disabled += 1
-      
-      else: 
+
+      else:
         # If channel is disabled, enabled it if it's in the current playlist
         if channel.name in names or channel.name in names_stripped:
           channel.enabled = True
@@ -356,3 +356,60 @@ def sync_channels_with_playlist(channels):
     message = str(e)
 
   return message
+
+
+def get_running_processes_details():
+  output = ''
+  try:
+    cmd = 'ps -eo pid,ppid,pcpu,pmem,start_time,time,args | grep -v grep | grep WebGrab\+Plus\.exe'
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    (output, err) = p.communicate()
+    p.wait()
+  except Exception as er:
+    logger.exception(er)
+  output = output.replace('/usr/bin/mono-sgen /home/g/uWsgiApps/epgapp/epgapp/bin/', '')
+  output = output.replace('/home/g/uWsgiApps/epgapp/epgapp/temp/data/', '')
+  output = output.replace('/usr/bin/mono-sgen ', '')
+  return output.decode('utf-8')
+
+
+def get_last_grabbing_time():
+  try:
+    return getReport()['report']['generatedOn']
+  except:
+    return '00:00:00'
+
+
+def regenerate_epg():
+  status = False
+  details = None
+  epgfiles = []
+
+  try:
+    import glob
+    import xml.etree.ElementTree as ET
+
+    tv = ET.Element("tv")
+
+    for file in glob.glob("epgapp/temp/*.epg.xml"):
+      try:
+        logger.debug(file)
+        root = ET.parse( file ).getroot()
+        tv.append( root.find( 'channel' ) )
+        tv.extend( root.findall( 'programme' ) )
+
+      except Exception as er:
+        logger.exception(er)
+
+
+    tree = ET.ElementTree(tv)
+    tree.write(os.path.join(temp_path, "epg.xml"))
+
+    status = True
+    details = "EPG successfully regenerated!"
+
+  except Exception as er:
+
+    details = str(er)
+
+  return (status, details)

@@ -21,20 +21,28 @@ Found {{ object_list.count }} enabled channels.
             <th>Channel name</th>
             <th>Xmltv id</th>
             <th>Number of siteinis</th>
+            <th>Grabbed programs</th>
+            <th>Used siteini</th>
+            <th>Grabbing round</th>
+            <th>First show start time</th>
+            <th>Last show start time</th>
             <th>Edit channel</th>
         </tr>
     </thead>
     <tbody>
 
     {% for channel in object_list %}
-        {% if channel.enabled %}
         <tr>
             <td><a href="{{ channel.get_absolute_url }}">{{ channel.name }}</a></td>
             <td>{{ channel.xmltv_id }}</td>
             <td>{{ channel.siteinis.count }}</td>
+            <td>{{ channel.programsCount }}</td>
+            <td>{{ channel.siteiniName }}</td>
+            <td>{{ channel.siteiniIndex }}</td>
+            <td>{{ channel.firstShowStartsAt }}</td>
+            <td>{{ channel.lastShowStartsAt }}</td>
             <td><a href="{% url 'admin:epgapp_channel_change' channel.id %}">Edit</a></td>
         </tr>
-        {% endif %}
     {% empty %}
         <tr><td colspan="3">No stats yet.</td></tr>
     {% endfor %}

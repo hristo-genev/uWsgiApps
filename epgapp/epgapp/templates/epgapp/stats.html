@@ -22,34 +22,4 @@ EPG file size: {{ report.fileSize }} (bytes)
 EPG file md5 hash: {{ report.md5hash }}
 </pre>
 
-<h3>Details:</h3>
-<table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Siteini</th>
-        <th>Programs</th>
-        <th>Siteini #</th>
-        <th>First show date</th>
-        <th>Last show date</th>
-      </tr>
-    </thead>
-    <tbody>
-
-    {% for channel in report.channels %}
-        <tr>
-            <td>{{ channel.name }}</td>
-            <td><a href="{% url 'siteini-detail' channel.siteiniName %}">{{ channel.siteiniName }}</a></td>
-            <td>{{ channel.programsCount }}</td>
-            <td>{{ channel.siteiniIndex }}</td>
-            <td>{{ channel.firstShowStartsAt }}</td>
-            <td>{{ channel.lastShowStartsAt }}</td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="6">No stats yet.</td></tr>
-    {% endfor %}
-
-    </tbody>
-</table>
-
 {% endblock %}
