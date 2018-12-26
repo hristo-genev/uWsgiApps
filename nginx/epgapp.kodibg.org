@@ -9,7 +9,7 @@ server {
     root /home/g/uWsgiApps/epgapp/;
   }
 
-  location /downloads/ {
+  location /files/ {
     alias /home/g/uWsgiApps/epgapp/epgapp/temp/;
     #autoindex on;
   }

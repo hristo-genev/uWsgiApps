@@ -15,6 +15,7 @@ from epgapp.models import *
 from epgapp.forms import *
 from epgapp.helper import *
 from epgapp.settings import APP_DIR, APP_NAME
+from epgapp.serializers import ChannelSerializer
 
 temp_path = os.path.join(APP_DIR, 'temp')
 
@@ -334,7 +335,7 @@ def get_epg_report(request):
   return JsonResponse( get_report() )
 
 @login_required
-def epg(request):
+def downloads(request):
 
   try:
     report = get_report()['report']
@@ -346,14 +347,18 @@ def epg(request):
 
   return render(
     request,
-    '%s/stats.html' % APP_NAME,
+    '%s/downloads.html' % APP_NAME,
     {
       'report': report,
     }
   )
 
-
-
 def regenerate(request):
   (status, details) = regenerate_epg()
   return JsonResponse( { 'status': status, 'details': details} )
+
+
+def map(request):
+  channels = Channel.objects.all()
+  serializer = ChannelSerializer(channels, many=True)
+  return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)

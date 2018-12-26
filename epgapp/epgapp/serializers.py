@@ -25,6 +25,18 @@ class ChannelSerializer(serializers.ModelSerializer):
     model  = Channel
     fields = [ 'name', 'xmltv_id', 'update', 'siteinis', 'timeshifts' ]
 
+#class CategorySerializer(serializer.ModelSerializer):
+#  class Meta:
+#    meta = Category
+#    fields = ['name']
+
+#class MapSerializer(serializers.ModelSerializer):
+#  timeshifts = TimeshiftsSerializer(source='timeshifts_set', many=True)
+#  category = CategorySerializer(source='category_set', many=True}
+#  class Meta:
+#    model = Channel
+#    fields = ['name', 'xmltv_id', 'category', 'timeshifts']
+
 class SingleSiteiniSerializer(serializers.Serializer):
   name = serializers.CharField(max_length=200)
   site_id  = serializers.CharField(max_length=512)
@@ -45,9 +57,9 @@ class SettingsSerializer(serializers.ModelSerializer):
   mode        = serializers.SerializerMethodField()
   retry       = serializers.SerializerMethodField()
   proxy       = serializers.SerializerMethodField()
-  timespan    = serializers.SerializerMethodField()  
+  timespan    = serializers.SerializerMethodField()
   postprocess = serializers.SerializerMethodField()
-  
+
   class Meta:
     model  = Settings
     fields = ('filename', 'update', 'logging', 'timespan', 'skip', 'mode', 

@@ -413,3 +413,7 @@ def regenerate_epg():
     details = str(er)
 
   return (status, details)
+
+def get_channels_map():
+  channels = Channel.objects.all()
+  for channel in channels:

@@ -12,7 +12,9 @@ from django.contrib import admin
 # admin.autodiscover()
 
 urlpatterns = [
-    url(r'^$', epgapp.views.ChannelListView.as_view(), name='channel-list'),
+    url(r'^$', epgapp.views.ChannelListView.as_view(), name='home-link'),
+    url(r'^channels/$', epgapp.views.ChannelListView.as_view(), name='channel-list'),
+    url(r'^channels/map/$', epgapp.views.map, name='channels-map'),
     url(r'^channel/(?P<slug>.+)/grab/$', epgapp.views.grab, name='grab'),
     url(r'^channel/(?P<slug>.+?)/$', epgapp.views.ChannelDetailView.as_view(), name='channel-detail'),
     #url(r'^search/$', view=search, name = 'channel-search-view'),
@@ -28,7 +30,7 @@ urlpatterns = [
     url(r'^grabbing/epg/report$', epgapp.views.get_epg_report, name='get-epg-report'),
     url(r'^grabbing/epg/regenerate$', epgapp.views.regenerate, name='regenerate-epg-url'),
     url(r'^grabbing/epg/download$', epgapp.views.epg_download, name='epg-download'),
-    url(r'^epg/$', epgapp.views.epg, name='epg-url'),
+    url(r'^downloads/$', epgapp.views.downloads, name='downloads-url'),
     url(r'^grabbing/run/status/(?P<processId>.+)$', epgapp.views.status, name='status'),
     url(r'^grabbing$', epgapp.views.grabbing, name='grabbing'),
     url(r'^login/$', django.contrib.auth.views.LoginView.as_view(), name='login'),
