@@ -6,7 +6,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP_NAME = 'epgapp'
 APP_DIR  = os.path.join(BASE_DIR, APP_NAME)
 WSGI_APPLICATION = APP_NAME + '.wsgi.application'
-
+LOGIN_REDIRECT_URL = 'home-link'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'a40eb3b4-fde5-4d71-8e91-26184e320329'
 

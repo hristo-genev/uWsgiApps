@@ -99,7 +99,6 @@ class Channel(models.Model):
     ordering = ['-name']
     verbose_name_plural = '       Channels'
 
-
 class AlternativeName(models.Model):
   channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
   name    = models.CharField(max_length=64, blank=True)

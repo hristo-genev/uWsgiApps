@@ -414,6 +414,24 @@ def regenerate_epg():
 
   return (status, details)
 
-def get_channels_map():
-  channels = Channel.objects.all()
-  for channel in channels:
+def get_channels_map(channels):
+  streams = {}
+
+  try:
+    map = {'streams' : streams}
+    for c in channels:
+      alt_names = AlternativeName.objects.select_related().filter(channel=c.id)
+      if len(alt_names) > 0:
+        for alt_name in alt_names:
+          stream = {}
+          streams[alt_name.name] = stream
+          stream['name'] = alt_name.name
+      else:
+        stream = {}
+        streams[c.name] = stream
+        stream['name'] = c.name
+
+  except Exception as er:
+    logger.exception(er)
+
+  return streams

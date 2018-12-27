@@ -360,5 +360,6 @@ def regenerate(request):
 
 def map(request):
   channels = Channel.objects.all()
-  serializer = ChannelSerializer(channels, many=True)
-  return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
+  #serializer = ChannelSerializer(channels, many=True)
+  data = get_channels_map(channels)
+  return JsonResponse(data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
