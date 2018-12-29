@@ -224,7 +224,8 @@ def grab(request, slug):
 
 @login_required
 def siteini_test(request):
-  slug = request.META.get('HTTP_REFERER').split('/')[-2]
+  try: slug = request.META.get('HTTP_REFERER').split('/')[-2]
+  except: slug = ""
   siteinis = Siteini.objects.filter(enabled=True)
   configs = Settings.objects.all();
 
@@ -363,3 +364,8 @@ def map(request):
   #serializer = ChannelSerializer(channels, many=True)
   data = get_channels_map(channels)
   return JsonResponse(data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
+
+
+def python_grabber(request, pythongrabbername):
+  (status, details) = run_python_grabber(pythongrabbername)
+  return JsonResponse( {  'pythongrabbername': pythongrabbername, 'status': status, 'details': details} )

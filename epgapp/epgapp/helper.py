@@ -8,6 +8,7 @@ import logging
 import requests
 import traceback
 from .settings import APP_DIR
+from .pythongrabbers import grabbers
 
 logger = logging.getLogger(__name__)
 
@@ -365,12 +366,15 @@ def get_running_processes_details():
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     (output, err) = p.communicate()
     p.wait()
+
+    output = output.decode('utf-8').replace('/usr/bin/mono-sgen /home/g/uWsgiApps/epgapp/epgapp/bin/', '')
+    output = output.decode('utf-8').replace('/home/g/uWsgiApps/epgapp/epgapp/temp/data/', '')
+    output = output.decode('utf-8').replace('/usr/bin/mono-sgen ', '')
+
   except Exception as er:
     logger.exception(er)
-  output = output.replace('/usr/bin/mono-sgen /home/g/uWsgiApps/epgapp/epgapp/bin/', '')
-  output = output.replace('/home/g/uWsgiApps/epgapp/epgapp/temp/data/', '')
-  output = output.replace('/usr/bin/mono-sgen ', '')
-  return output.decode('utf-8')
+
+  return output
 
 
 def get_last_grabbing_time():
@@ -435,3 +439,27 @@ def get_channels_map(channels):
     logger.exception(er)
 
   return streams
+
+
+def run_python_grabber(pythongrabbername):
+
+  status = False
+  details = ''
+
+  if os.path.isfile(os.path.join(cwd, 'pythongrabbers', pythongrabbername)):
+    try:
+      out_dir = os.path.join(cwd, 'pythongrabbers')
+      logger.debug("Executing %s(3,1)" % pythongrabbername)
+      func = getattr(grabbers, pythongrabbername)
+      func(out_dir, 3,1)
+      status = True
+
+    except Exception as er:
+      logger.exception(er)
+      details = str(er)
+
+
+  else:
+    details = 'Python grabber does not exist!'
+
+  return (status, details)

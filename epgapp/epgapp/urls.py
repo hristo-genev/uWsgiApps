@@ -37,4 +37,5 @@ urlpatterns = [
     url(r'^settings/*$', epgapp.views.settings, name='settings-url'),
     url(r'^settings/raw/(?P<id>.+?)$', epgapp.views.exported_settings, name='exported-settings'),
     url(r'^settings/raw/$', epgapp.views.exported_settings, name='exported-last-settings'),
+    url(r'^pythongrabbers/run/(?P<pythongrabbername>.*)', epgapp.views.python_grabber, name='run-python-grabber'),
 ]
