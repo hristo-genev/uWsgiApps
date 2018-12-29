@@ -8,7 +8,8 @@ import logging
 import requests
 import traceback
 from .settings import APP_DIR
-from .pythongrabbers import grabbers
+from importlib import import_module
+from epgapp.pythongrabbers import pygrabbers
 
 logger = logging.getLogger(__name__)
 
@@ -441,25 +442,37 @@ def get_channels_map(channels):
   return streams
 
 
-def run_python_grabber(pythongrabbername):
+def run_python_grabber(pythongrabbername, startdaysahead=3, grabfordays=1):
 
   status = False
   details = ''
-
-  if os.path.isfile(os.path.join(cwd, 'pythongrabbers', pythongrabbername)):
+  out_dir = os.path.join(cwd, 'pythongrabbers')
+  
+  if hasattr(pygrabbers, pythongrabbername):
     try:
       out_dir = os.path.join(cwd, 'pythongrabbers')
-      logger.debug("Executing %s(3,1)" % pythongrabbername)
-      func = getattr(grabbers, pythongrabbername)
-      func(out_dir, 3,1)
+      logger.debug("Executing %s(%s, %s)" % (pythongrabbername, startdaysahead, grabfordays))
+      func = getattr(pygrabbers, pythongrabbername)
+      res = func(out_dir, int(startdaysahead), int(grabfordays))
       status = True
+      details = str(res)
 
     except Exception as er:
       logger.exception(er)
       details = str(er)
 
-
-  else:
-    details = 'Python grabber does not exist!'
-
   return (status, details)
+
+def get_epg_for_python_grabber(name, day=None):
+
+  if day is None:
+    import datetime
+    day = datetime.date.today()
+
+  day = '%02d' % int(day)
+  
+  file_path = os.path.join(cwd, 'pythongrabbers', name, "%s.json" % day)
+  if os.path.isfile(file_path):
+    with open(file_path) as f:
+      return json.load(f)
+  return {}

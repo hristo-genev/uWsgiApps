@@ -11,9 +11,7 @@ import datetime
 import requests
 from .utils import *
 
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
-def moviestar(out_dir, startday, maxday, debug=False):
+def run(out_dir, startday, maxday, debug=False):
   DEBUG = debug
   STARTDAY = startday #3 means start capturing 3 days ahead
   MAXDAYS = maxday #capture for how many days
@@ -24,6 +22,8 @@ def moviestar(out_dir, startday, maxday, debug=False):
 
   ### Calculate dates for for scrabbing days
   dates = get_dates(MAXDAYS, STARTDAY)
+  
+  total = 0
 
   ### Iterate days
   for i in range(0, MAXDAYS):
@@ -31,15 +31,15 @@ def moviestar(out_dir, startday, maxday, debug=False):
     text = get_content(url, headers)
 
     file_name = get_file_name( out_dir, channel, dates[i].day )
+    
+    programs = []
+    programs_sorted = []
 
     # Save full content and convert to json
     with open(file_name, "wb") as f:
       f.write(text.encode('utf8'))
     # load json
     items = json.load(codecs.open(file_name, 'r', 'utf-8-sig'))
-
-    programs = []
-    programs_sorted = []
 
     for item in items["EVENTS"]:
       rdates = item["fc_rdate"].split(",")
@@ -101,5 +101,7 @@ def moviestar(out_dir, startday, maxday, debug=False):
 
         del program.url
 
+      total += len(programs)
       write_file( file_name, programs )
 
+  return total

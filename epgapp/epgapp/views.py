@@ -366,6 +366,10 @@ def map(request):
   return JsonResponse(data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
 
 
-def python_grabber(request, pythongrabbername):
-  (status, details) = run_python_grabber(pythongrabbername)
+def python_grabber(request, pythongrabbername, startdaysahead, grabfordays):
+  (status, details) = run_python_grabber(pythongrabbername, startdaysahead, grabfordays)
   return JsonResponse( {  'pythongrabbername': pythongrabbername, 'status': status, 'details': details} )
+
+def get_json_epg(request, pythongrabbername, day):
+  data = get_epg_for_python_grabber(pythongrabbername, day)
+  return JsonResponse(data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)

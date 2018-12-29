@@ -123,9 +123,9 @@ class Program():
 def get_dates(MAXDAYS=3, STARTDAY=0):
   dates = []
   now = datetime.datetime.now()
-  end = MAXDAYS + 1 # get an extra day epoch time as a limit for previous day
+  end = int(MAXDAYS) + 1 # get an extra day epoch time as a limit for previous day
   for i in range(0, end):
-    offset = STARTDAY + i
+    offset = int(STARTDAY) + i
     current_day = now + datetime.timedelta(days=offset)
     date = Date(current_day)
     dates.append(date)
