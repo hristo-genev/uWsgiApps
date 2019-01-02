@@ -42,7 +42,7 @@ input[type="checkbox"].input-validation-error {
 }
 
 
-table {
+table.maintable {
     width: 100%;
     background: white;
     border-radius: 3px;
@@ -54,30 +54,32 @@ table {
     animation: float 5s infinite;
 }
 
-th {
-    color: #D5DDE5;
-    ;
-    background: #1b1e24;
-    /*border-bottom:4px solid #9ea7af;*/
-    border-right: 1px solid #343a45;
-    font-size: 16px;
-    font-weight: 100;
-    padding: 24px;
-    text-align: left;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    vertical-align: middle;
-}
+    table.maintable th {
+        font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+        color: #fff;
+        background: #79aec8;
+        letter-spacing: 0.5px;
+        /*border-bottom:4px solid #9ea7af;*/
+        border-right: 1px solid #343a45;
+        font-size: 12px;
+        font-weight: 400;
+        padding: 14px;
+        text-transform: uppercase;
+        text-align: left;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        vertical-align: middle;
+    }
 
-    th:first-child {
+    table.maintable th:first-child {
         border-top-left-radius: 3px;
     }
 
-    th:last-child {
+    table.maintable th:last-child {
         border-top-right-radius: 3px;
         border-right: none;
     }
 
-tr {
+table.maintable > tr {
     border-top: 1px solid #C1C3D1;
     border-bottom: 1px solid #C1C3D1;
     color: #666B85;
@@ -86,10 +88,10 @@ tr {
     text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
 }
 
-    tr:hover td {
-        background: #4E5066;
-        color: #FFFFFF;
-        border-top: 1px solid #22262e;
+    table.maintable tr:hover td {
+        /*background: #4E5066;*/
+        /*color: #FFFFFF;*/
+        /*border-top: 1px solid #22262e;*/
     }
 
     tr:first-child {
@@ -100,13 +102,13 @@ tr {
         border-bottom: none;
     }
 
-    tr:nth-child(odd) td {
-        background: #EBEBEB;
-    }
+table.maintable tr:nth-child(odd) td {
+    background: #EBEBEB;
+}
 
-    tr:nth-child(odd):hover td {
-        background: #4E5066;
-    }
+table.maintable tr:nth-child(odd):hover td {
+    /*background: #4E5066;*/
+}
 
     tr:last-child td:first-child {
         border-bottom-left-radius: 3px;
