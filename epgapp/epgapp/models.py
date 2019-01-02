@@ -81,15 +81,15 @@ class Channel(models.Model):
   def get_absolute_url(self):
     return reverse('channel-detail', args=[str(self.slug)])
     #return reverse('channel-detail', kwargs={'id': int(self.id)})
-    
+
   def __str__(self):
     return self.name
-  
+
   def get_siteinis(self):
     return len(self.siteinis.all())
-  
+
   get_siteinis.short_description = 'Total siteinis'
-  
+
   def get_timeshifts(self):
     return len(Timeshifts.objects.filter(parent=self))
 

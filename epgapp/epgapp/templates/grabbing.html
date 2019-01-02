@@ -9,8 +9,11 @@ button { margin-left: 10px; padding-left: 10px; padding-right: 10px; float:left;
 #report { display: none; }
 
 {% if isRunning %}
+
 #runAll { display: none; }
 #loader { display: block; }
+#regenerateP { display: none; }
+
 {% else %}
 #cancelGrabbing { display: none; }
 {% endif %}
@@ -43,7 +46,7 @@ use {
 
 <p>Currently there are {{ nChannels }} enabled channels. Last EPG grabbing was on {{lastGrabbingTime}}.</p>
 
-<p>Last used <a href="/downloads/wgmulti.config.json" target="_blank">wgmulti.config.json</a>
+<p>Last used <a href="/files/wgmulti.config.json" target="_blank">wgmulti.config.json</a>
 <br />
 </p>
 
@@ -58,18 +61,17 @@ Select WebGrab options and click Run:
 <button id="runAll">Run</button> 
 <button id="cancelGrabbing">Cancel</button> 
 
-<br />
-<br />
-Regenerate EPG (combine all channel guides in case of corrections):
-<br/ >
-<button id="regenerateEpg">Regenerate</button>
-<br />
-
 <svg viewBox="-2000 -1000 4000 2000" id="loader">
     <path id="inf" d="M354-354A500 500 0 1 1 354 354L-354-354A500 500 0 1 0-354 354z"></path>
     <use xlink:href="#inf" stroke-dasharray="1570 5143" stroke-dashoffset="6713px"></use>
 </svg>
 
+<br />
+<p id="regenerateP">
+  Regenerate EPG (combine all channel guides in case of corrections):
+  <br />
+  <button id="regenerateEpg">Regenerate</button>
+</p>
 <br />
 <br />
 
@@ -91,6 +93,7 @@ $( document ).ready(function() {
       var loader = $("#loader");
       var runAll = $("#runAll");
       var regenerateEpg = $("#regenerateEpg");
+      var regenerateP = $("regenerateP");
       var cancelGrabbing = $("#cancelGrabing");
       var reportRetrieved = false;
       setInterval(checkGrabbingStatus, 5000);
@@ -132,7 +135,7 @@ $( document ).ready(function() {
                     process = 'wgmulti.exe';
                     cancelGrabbing.hide();
                     loader.hide();
-                    regenerateEpg.show();
+                    regenerateP.show();
                     //if (!reportRetrieved)
                     //  getReport();
                 }
@@ -165,9 +168,9 @@ $( document ).ready(function() {
                 }
                 else 
                 {
-                    loader.hide();
-                    cancelGrabbing.hide();
-                    regenerateEpg.show();
+                    //loader.hide();
+                    //cancelGrabbing.hide();
+                    //regenerateEpg.show();
 
                 }
             }

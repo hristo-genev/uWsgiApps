@@ -42,7 +42,7 @@ input[type="checkbox"].input-validation-error {
 }
 
 
-table {
+table.frontend {
     width: 100%;
     background: white;
     border-radius: 3px;
@@ -54,9 +54,8 @@ table {
     animation: float 5s infinite;
 }
 
-th {
+table.frontend th {
     color: #D5DDE5;
-    ;
     background: #1b1e24;
     /*border-bottom:4px solid #9ea7af;*/
     border-right: 1px solid #343a45;
@@ -68,11 +67,11 @@ th {
     vertical-align: middle;
 }
 
-    th:first-child {
+th:first-child {
         border-top-left-radius: 3px;
     }
 
-    th:last-child {
+th:last-child {
         border-top-right-radius: 3px;
         border-right: none;
     }

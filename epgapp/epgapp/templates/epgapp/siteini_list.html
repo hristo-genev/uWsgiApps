@@ -28,7 +28,7 @@
         <tr>
             <td><a href="{{ o.get_absolute_url }}">{{ o.name }}</a></td>
             <td><a href="{% url 'admin:epgapp_siteini_change' o.id %}">Edit</a></td>
-            <td><a href="{% url 'siteini-test' %}">Test</a></td>
+            <td><a href="{% url 'siteini-test' %}#{{o.name}}">Test</a></td>
             <td>{{ o.created }}</td>
             <td>{{ o.modified }}</td>
         </tr>
