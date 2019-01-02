@@ -91,7 +91,8 @@ use {
         <tr>
             <td colspan="3">
                 <br />
-                <input id="startTest" type="submit" value="Start" />            
+                <input id="startTest" type="submit" value="Start" />
+                <button id="cancelTest" style="display:none;">Cancel</button>
                 <svg viewBox="-2000 -1000 4000 2000" id="loader">
                   <path id="inf" d="M354-354A500 500 0 1 1 354 354L-354-354A500 500 0 1 0-354 354z"></path>
                   <use xlink:href="#inf" stroke-dasharray="1570 5143" stroke-dashoffset="6713px"></use>
@@ -119,9 +120,38 @@ EPG:
 
 {% block scripts %}
 <script>
-    $(document).ready(function () {
+
+// Function to change the "Edit" link url as per the dropdown selection
+
+function generateLinkFromDropdown(dropdown, link) {
+  let value = dropdown.options[dropdown.selectedIndex].value;  
+  // let link = document.getElementById("siteini_edit_link");
+  let new_href = link.href.replace(/\d/, value);
+  link.href = new_href;
+}
+
+
+// Read any hash value in URL and select the dropdown value automatically
+
+if (window.location.hash) {
+  var hashValue = window.location.hash.substring(1);
+  var link = document.getElementById("siteini_edit_link");
+  var dropdown = document.getElementById("siteini_id");
+
+  for (i=0; i <= dropdown.options.length; i++) {
+    if (dropdown.options[i].innerHTML == hashValue) {
+      dropdown.selectedIndex = i;
+      break;
+    }
+  }
+  generateLinkFromDropdown(dropdown, link);
+}
+
+     
+$(document).ready(function () {
         var statusHandle;
         var processId = 0;
+
 
         var getEpgData = function () {
             let selectEl = document.getElementById('siteini_id');
@@ -145,19 +175,12 @@ EPG:
                 $("#startTest").attr('disabled', false);
             })
             .always(function (data) {
-                a = $("#logFileUrl");
-                a.attr("href", '/grabbing/epg/log/' + siteini)
-                a.show();
                 $('#loader').hide();
-                loader.style.display = "none";
+                //loader.style.display = "none";
+                $("#cancelTest").hide();
             });
         }
 
-        var generateLinkFromDropdown = function (dropdown, link) {
-            var value = dropdown.options[dropdown.selectedIndex].value;
-            var href = link.attr("href").replace(/\d/, value);
-            link.attr("href", href);
-        }
 
         var checkGrabbingStatus = function () {
             $.ajax({
@@ -181,20 +204,24 @@ EPG:
             });
         }
 
-        $("#siteini").change(function () {
-            generateLinkFromDropdown(this, $("#siteini_edit_link"));
+        $("#siteini_id").change(function () {
+            generateLinkFromDropdown(this, document.getElementById("siteini_edit_link"));
         });
 
-        $("#webgrab_configuration").change(function () {
-            generateLinkFromDropdown(this, $("#webgrab_configuration_edit_link"));
+        $("#webgrab_configuration_id").change(function () {
+            generateLinkFromDropdown(this, document.getElementById("webgrab_configuration_edit_link"));
         });
 
         $("#testSiteini").submit(function (event) {
             var form = $(this);
             $("#startTest").attr('disabled', true);
+            $("#cancelTest").show();
             event.preventDefault();
             var loader = document.getElementById('loader');
             loader.style.display = "block";
+            var a = $("#logFileUrl");
+            a.attr("href", '/grabbing/epg/log/' + siteini)
+            a.show();
 
             $.ajax({
                 type: 'POST',
@@ -216,6 +243,31 @@ EPG:
             });
 
         });
+
+        $("#cancelTest").click(function (event) {
+            $.ajax({
+                type: 'GET',
+                url: "/grabbing/cancel/" + processId,
+                dataType: 'json'
+            })
+            .done(function(data) {
+
+            })
+            .always(function(data) {
+              $("#status").html(data.details)
+              if (data.status) {
+                $("#startTest").attr('disabled', false);
+                $("#cancelTest").hide();
+              }             
+            })
+            .fail(function(data) {
+                $('#status').html(data.details);
+                //$("#startTest").attr('disabled', false);
+                //loader.style.display = "none";
+            });
+
+        });
+
     });
 </script>
 {% endblock %}

@@ -25,7 +25,7 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 class ChannelAdmin(admin.ModelAdmin):
-  list_display_links  = [ 'name']
+  list_display_links  = [ 'name' ]
   search_fields       = [ 'name', 'category__name' ]
   list_display        = [ 'name', 'xmltv_id', 'slug', 'enabled', 'get_siteinis', 'get_timeshifts' ]
   list_editable       = [ 'enabled', 'xmltv_id', 'slug' ]

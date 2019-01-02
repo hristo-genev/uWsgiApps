@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^grabbing/epg/download$', epgapp.views.epg_download, name='epg-download'),
     url(r'^downloads/$', epgapp.views.downloads, name='downloads-url'),
     url(r'^grabbing/run/status/(?P<processId>.+)$', epgapp.views.status, name='status'),
+    url(r'^grabbing/cancel/(?P<processId>.+)$', epgapp.views.cancel_grabbing, name='cancel-grabbing'),
     url(r'^grabbing$', epgapp.views.grabbing, name='grabbing'),
     url(r'^accounts/login', django.contrib.auth.views.LoginView.as_view(), name='accounts-login'),
     url(r'^login/$', django.contrib.auth.views.LoginView.as_view(), name='login'),
@@ -38,5 +39,5 @@ urlpatterns = [
     url(r'^settings/raw/(?P<id>.+?)$', epgapp.views.exported_settings, name='exported-settings'),
     url(r'^settings/raw/$', epgapp.views.exported_settings, name='exported-last-settings'),
     url(r'^pythongrabbers/run/(?P<pythongrabbername>.*?)/(?P<startdaysahead>\d)/(?P<grabfordays>\d)/', epgapp.views.python_grabber, name='run-python-grabber'),
-    url(r'^pythongrabbers/epg/(?P<pythongrabbername>.*?)/json/(?P<day>\d*)', epgapp.views.get_json_epg, name='get-json-epg'),
+    url(r'^pythongrabbers/epg/(?P<pythongrabbername>.*?)/(?P<day>\d+?).json', epgapp.views.get_json_epg, name='get-json-epg'),
 ]

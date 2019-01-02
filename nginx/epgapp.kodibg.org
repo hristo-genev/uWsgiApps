@@ -11,7 +11,11 @@ server {
 
   location /files/ {
     alias /home/g/uWsgiApps/epgapp/epgapp/temp/;
-    #autoindex on;
+  }
+
+  location /logs/ {
+    alias /home/g/uWsgiApps/epgapp/epgapp/logs/;
+    autoindex on;
   }
 
   location / {

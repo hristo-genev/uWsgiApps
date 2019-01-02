@@ -157,7 +157,7 @@ class ChannelDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        file_path = os.path.join(APP_DIR, 'temp/', context['channel'].xmltv_id + '.xml')
+        file_path = os.path.join(APP_DIR, 'temp/', context['channel'].xmltv_id + '.epg.xml')
         context['content'] = get_raw_epg(file_path)
         context['now'] = timezone.now()
         return context
@@ -362,8 +362,9 @@ def regenerate(request):
 def map(request):
   channels = Channel.objects.all()
   #serializer = ChannelSerializer(channels, many=True)
-  data = get_channels_map(channels)
-  return JsonResponse(data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
+  serializer = ChannelSerializer(channels, many=True)
+  #data = get_channels_map(channels)
+  return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
 
 
 def python_grabber(request, pythongrabbername, startdaysahead, grabfordays):
@@ -373,3 +374,7 @@ def python_grabber(request, pythongrabbername, startdaysahead, grabfordays):
 def get_json_epg(request, pythongrabbername, day):
   data = get_epg_for_python_grabber(pythongrabbername, day)
   return JsonResponse(data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
+
+def cancel_grabbing(request, processId):
+  (status, details) = kill_process_by_id(processId)
+  return JsonResponse( { 'status': status, 'details': details} )

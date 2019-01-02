@@ -368,9 +368,10 @@ def get_running_processes_details():
     (output, err) = p.communicate()
     p.wait()
 
-    output = output.decode('utf-8').replace('/usr/bin/mono-sgen /home/g/uWsgiApps/epgapp/epgapp/bin/', '')
-    output = output.decode('utf-8').replace('/home/g/uWsgiApps/epgapp/epgapp/temp/data/', '')
-    output = output.decode('utf-8').replace('/usr/bin/mono-sgen ', '')
+    output = output.decode('utf-8')
+    output = output.replace('/usr/bin/mono-sgen /home/g/uWsgiApps/epgapp/epgapp/bin/', '')
+    output = output.replace('/home/g/uWsgiApps/epgapp/epgapp/temp/data/', '')
+    output = output.replace('/usr/bin/mono-sgen ', '')
 
   except Exception as er:
     logger.exception(er)
@@ -463,6 +464,8 @@ def run_python_grabber(pythongrabbername, startdaysahead=3, grabfordays=1):
 
   return (status, details)
 
+
+
 def get_epg_for_python_grabber(name, day=None):
 
   if day is None:
@@ -470,10 +473,45 @@ def get_epg_for_python_grabber(name, day=None):
     day = datetime.date.today()
 
   day = '%02d' % int(day)
-  
+
   file_path = os.path.join(cwd, 'pythongrabbers', name, "%s.json" % day)
   if os.path.isfile(file_path):
     with open(file_path) as f:
       return json.load(f)
   return {}
 
+
+
+def kill_process_by_id(id):
+  status = False
+  details = ''
+  try:
+    cmd = 'ps -eo pid,args | grep -v grep | grep %s' % id
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    (output, err) = p.communicate()
+    p.wait()
+    output = output.decode('utf-8')
+    logger.debug("Ouput: %s" % output)
+
+    try:
+      import re
+      m = re.compile("(\d+?)\s").findall(output)
+      logger.debug("Found %s matches" % len(m))
+      if len(m) > 0:
+        logger.debug("process id is: %s" % m[0])
+        logger.debug("Sending kill signal")
+        os.system("kill -9 %s" % m[0])
+        details = "Process with identifier %s should have been killed" % m[0]
+        logger.debug(details)
+        status = True
+      else:
+        details = 'No process with identifier %s was found to be running!' % id
+    except Exception as er:
+      logger.exception(er)
+      details = str(er)
+
+  except Exception as er:
+    logger.exception(er)
+    details = str(er)
+
+  return (status, details)
