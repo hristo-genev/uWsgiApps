@@ -111,7 +111,7 @@ textarea#log
             <td colspan="3">
                 <br />
                 <input id="startTest" type="submit" value="Start" />
-                <button id="cancelTest" style="display:none;">Cancel</button>
+                <!--button id="cancelTest" style="display:none;">Cancel</button-->
                 <svg viewBox="-2000 -1000 4000 2000" id="loader">
                   <path id="inf" d="M354-354A500 500 0 1 1 354 354L-354-354A500 500 0 1 0-354 354z"></path>
                   <use xlink:href="#inf" stroke-dasharray="1570 5143" stroke-dashoffset="6713px"></use>
@@ -204,7 +204,7 @@ $(document).ready(function () {
             .always(function (data) {
                 $('#loader').hide();
                 //loader.style.display = "none";
-                $("#cancelTest").hide();
+                //$("#cancelTest").hide();
             });
         }
 
@@ -244,7 +244,7 @@ $(document).ready(function () {
         $("#testSiteini").submit(function (event) {
             var form = $(this);
             $("#startTest").attr('disabled', true);
-            $("#cancelTest").show();
+            //$("#cancelTest").show();
             event.preventDefault();
             var loader = $("#loader");
             loader.show();
