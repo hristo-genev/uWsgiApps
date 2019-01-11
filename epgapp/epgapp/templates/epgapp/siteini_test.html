@@ -3,30 +3,49 @@
 {% block content %}
 
 <style>
-    #startTest {
-        float: left;
-    }
-svg {
-	max-width: 3em;
-	border-radius: 3px;
-	/*box-shadow: 2px 2px 5px #000;
-	*/background: #fff;
-	fill: none;
-	stroke: #0026ff;
-	stroke-linecap: round;
-	stroke-width: 8%;
-    float:left;
-    display: none;
-
+#startTest 
+{
+  float: left;
 }
 
-use {
-	stroke: #fff;
-	animation: a 2s linear infinite
+svg 
+{
+  max-width: 3em;
+  border-radius: 3px;
+  /*box-shadow: 2px 2px 5px #000;
+  */background: #fff;
+  fill: none;
+  stroke: #0026ff;
+  stroke-linecap: round;
+  stroke-width: 8%;
+  float:left;
+  display: none;
 }
 
-@keyframes a { to { stroke-dashoffset: 0px } }
+use 
+{
+  stroke: #fff;
+  animation: a 2s linear infinite
+}
 
+@keyframes a 
+{ 
+  to 
+  { 
+    stroke-dashoffset: 0px 
+  } 
+}
+
+textarea#log 
+{
+  max-width: 100%;
+  background-color: #f5f5f5; 
+  height: 300px;
+  overflow-y: scroll;
+  resize: none;
+  font-family: Courier;
+  font-size: 13px;
+}
 </style>
 
 <h1>Test siteini {{ slug }}</h1>
@@ -37,9 +56,9 @@ use {
 <h4>Test the <b></b> siteini:</h4>
 
 
-<form method="POST" id="testSiteini">
+<table>
+  <form method="POST" id="testSiteini">
     {% csrf_token %}
-    <table>
         <tr>
             <td>Siteini: </td>
             <td>
@@ -100,56 +119,65 @@ use {
 
             </td>
         </tr>
-    </table>
-
 </form>
+    </table>
 
 <br />
 
+STATUS:
 <pre id="status">
 </pre>
 
-<a id="logFileUrl" href="" style="display:none;" target="_blank">Log from last test</a>
+LOG: <a id="logFileUrl" href="" style="display:none;" target="_blank">Log from last test</a>
 <br />
+<textarea id="log" rows="10" cols="300"></textarea>
 
+<br />
+<br />
 EPG:
 <pre id="content">
 </pre>
+
 
 {% endblock %}
 
 {% block scripts %}
 <script>
 
+var dropdownEl = document.getElementById("siteini_id");
+var linkEl = document.getElementById("siteini_edit_link");
+var siteini_name = ""; 
+var logHandle;
+var statusHandle;
+
+// Set default update type
+document.getElementById("update").selectedIndex = 1;
+
 // Function to change the "Edit" link url as per the dropdown selection
 
-function generateLinkFromDropdown(dropdown, link) {
-  let value = dropdown.options[dropdown.selectedIndex].value;  
-  // let link = document.getElementById("siteini_edit_link");
-  let new_href = link.href.replace(/\d/, value);
-  link.href = new_href;
+function updateHrefFromDropdownSelection(dropdownEl, linkEl) {
+  let value = dropdownEl.options[dropdownEl.selectedIndex].value;  
+  let new_href = linkEl.href.replace(/\d/, value);
+  linkEl.href = new_href;
 }
 
 
 // Read any hash value in URL and select the dropdown value automatically
 
 if (window.location.hash) {
-  var hashValue = window.location.hash.substring(1);
-  var link = document.getElementById("siteini_edit_link");
-  var dropdown = document.getElementById("siteini_id");
-
-  for (i=0; i <= dropdown.options.length; i++) {
-    if (dropdown.options[i].innerHTML == hashValue) {
-      dropdown.selectedIndex = i;
+  // Update siteini name if it's provided in URL hash
+  siteini_name = window.location.hash.substring(1);
+  for (i=0; i <= dropdownEl.options.length; i++) {
+    if (dropdownEl.options[i].innerHTML == siteini_name) {
+      dropdownEl.selectedIndex = i;
       break;
     }
   }
-  generateLinkFromDropdown(dropdown, link);
+  updateHrefFromDropdownSelection(dropdownEl, linkEl);
 }
 
      
 $(document).ready(function () {
-        var statusHandle;
         var processId = 0;
 
 
@@ -157,10 +185,9 @@ $(document).ready(function () {
             let selectEl = document.getElementById('siteini_id');
             let siteini = selectEl.options[selectEl.selectedIndex].innerHTML;
             
-
             $.ajax({
-                url: '/grabbing/epg/raw/' + siteini,
-                dataType: 'json',
+                url: "/grabbing/epg/raw/" + siteini_name,
+                dataType: "json",
                 success: function (data) {
                     if (data.status) {
                         $('#content').html(data.raw_epg);
@@ -193,6 +220,7 @@ $(document).ready(function () {
                         $('#status').html('Status: Not running!');
                         $("#startTest").attr("disabled", false);
                         clearTimeout(statusHandle);
+                        clearTimeout(logHandle);
                         getEpgData();
                     }
                 }
@@ -201,15 +229,16 @@ $(document).ready(function () {
                 $('#status').html(data.responseText);
                 $("#startTest").attr('disabled', false);
                 clearTimeout(statusHandle);
+                clearTimeout(logHandle);
             });
         }
 
         $("#siteini_id").change(function () {
-            generateLinkFromDropdown(this, document.getElementById("siteini_edit_link"));
+            updateHrefFromDropdownSelection(this, document.getElementById("siteini_edit_link"));
         });
 
         $("#webgrab_configuration_id").change(function () {
-            generateLinkFromDropdown(this, document.getElementById("webgrab_configuration_edit_link"));
+            updateHrefFromDropdownSelection(this, document.getElementById("webgrab_configuration_edit_link"));
         });
 
         $("#testSiteini").submit(function (event) {
@@ -217,10 +246,12 @@ $(document).ready(function () {
             $("#startTest").attr('disabled', true);
             $("#cancelTest").show();
             event.preventDefault();
-            var loader = document.getElementById('loader');
-            loader.style.display = "block";
+            var loader = $("#loader");
+            loader.show();
             var a = $("#logFileUrl");
-            a.attr("href", '/grabbing/epg/log/' + siteini)
+            // Update siteini name from selected dropdown
+            siteini_name = $("#siteini_id :selected").text();
+            a.attr("href", '/grabbing/epg/log/' + siteini_name);
             a.show();
 
             $.ajax({
@@ -235,6 +266,7 @@ $(document).ready(function () {
                 if (data.details)
                     $('#content').html(data.details);
                 statusHandle = setInterval(checkGrabbingStatus, 5000);
+                setTimeout(logHandle = setInterval(getLog, 3000), 3000);
             })
             .fail(function(data) {
                 $('#status').html(data.responseText);
@@ -265,8 +297,24 @@ $(document).ready(function () {
                 //$("#startTest").attr('disabled', false);
                 //loader.style.display = "none";
             });
-
         });
+
+        var getLog = function() {
+            $.ajax({
+                type: 'GET',
+                url: "/grabbing/epg/log/" + siteini_name
+            })
+            .done(function(data) {
+            })
+            .always(function(data) {
+               var textarea = $("#log");
+               textarea.html(data)  
+               textarea.scrollTop(textarea[0].scrollHeight);
+            })
+            .fail(function(data) {
+            });
+
+        };
 
     });
 </script>

@@ -378,3 +378,16 @@ def get_json_epg(request, pythongrabbername, day):
 def cancel_grabbing(request, processId):
   (status, details) = kill_process_by_id(processId)
   return JsonResponse( { 'status': status, 'details': details} )
+
+def get_wgmulti_log(request):
+
+  try:
+    log_file_path = os.path.join(APP_DIR, 'temp/data/wgmulti.txt')
+    content = open(log_file_path, 'r', encoding='utf-8').read()
+
+  except Exception as er:
+    logger.exception(er)
+    content = traceback.format_exc()
+
+  return HttpResponse(content, content_type="text/plain")
+

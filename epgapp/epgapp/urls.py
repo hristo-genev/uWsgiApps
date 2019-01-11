@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^grabbing/run/status/(?P<processId>.+)$', epgapp.views.status, name='status'),
     url(r'^grabbing/cancel/(?P<processId>.+)$', epgapp.views.cancel_grabbing, name='cancel-grabbing'),
     url(r'^grabbing$', epgapp.views.grabbing, name='grabbing'),
+    url(r'^grabbing/log$', epgapp.views.get_wgmulti_log, name='get-wgmulti-log'),
     url(r'^accounts/login', django.contrib.auth.views.LoginView.as_view(), name='accounts-login'),
     url(r'^login/$', django.contrib.auth.views.LoginView.as_view(), name='login'),
     url(r'^logout$', django.contrib.auth.views.LogoutView.as_view(), name='logout'),

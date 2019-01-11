@@ -199,19 +199,22 @@ def start_grabbing(configDir=None):
 
   try:
     wgmulti     = os.path.join(APP_DIR, 'bin', 'wgmulti.exe')
-    wgmulti_log = os.path.join(APP_DIR, 'logs', 'wgmulti.log.txt')
 
-    if not configDir:
+    if configDir:
+      # we are running a single siteini test
+      wgmulti_log = os.path.join(configDir, 'wgmulti.log.txt')
+    else:
       configDir = os.path.join(APP_DIR, 'temp')
+      wgmulti_log = os.path.join(APP_DIR, 'logs', 'wgmulti.log.txt')
 
     import uuid
     id = uuid.uuid4().hex[:6].upper()
 
     cmd = '%s -configDir %s -id %s > %s 2>&1 &' % (wgmulti, configDir, id, wgmulti_log)
 
-    if os.name == 'nt': # Windows
-      cmd.replace(' 2>&1 &', '')
-      #cmd = 'START /B wgmulti.exe -configDir %s -id %s > ../logs/wgmulti.log.txt' % (configDir, id)
+    #if os.name == 'nt': # Windows
+    #  cmd.replace(' 2>&1 &', '')
+    #  cmd = 'START /B wgmulti.exe -configDir %s -id %s > ../logs/wgmulti.log.txt' % (configDir, id)
     logger.debug('COMMAND: %s' % cmd)
 
     #subprocess.call(cmd, shell=True)
