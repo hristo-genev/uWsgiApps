@@ -251,7 +251,7 @@ $(document).ready(function () {
             var a = $("#logFileUrl");
             // Update siteini name from selected dropdown
             siteini_name = $("#siteini_id :selected").text();
-            a.attr("href", '/grabbing/epg/log/' + siteini_name);
+            a.attr("href", '/logs/' + siteini_name);
             a.show();
 
             $.ajax({
@@ -302,7 +302,7 @@ $(document).ready(function () {
         var getLog = function() {
             $.ajax({
                 type: 'GET',
-                url: "/grabbing/epg/log/" + siteini_name
+                url: "/logs/" + siteini_name,
             })
             .done(function(data) {
             })

@@ -13,10 +13,10 @@ server {
     alias /home/g/uWsgiApps/epgapp/epgapp/temp/;
   }
 
-  location /logs/ {
-    alias /home/g/uWsgiApps/epgapp/epgapp/logs/;
-    autoindex on;
-  }
+  #location /logs/ {
+  #  alias /home/g/uWsgiApps/epgapp/epgapp/logs/;
+  #  autoindex on;
+  #}
 
   location / {
     include uwsgi_params;

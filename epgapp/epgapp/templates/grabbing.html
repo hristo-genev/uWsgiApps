@@ -1,4 +1,4 @@
-\{% extends "layout.html" %}
+{% extends "layout.html" %}
 
 {% block content %}
 
@@ -39,22 +39,33 @@ use {
 
 @keyframes a { to { stroke-dashoffset: 0px } }
 
+textarea#log
+{
+  max-width: 100%;
+  background-color: #f5f5f5;
+  height: 300px;
+  overflow-y: scroll;
+  resize: none;
+  font-family: Courier;
+  font-size: 13px;
+}
 </style>
 
 <h2>{{ title }}</h2>
 <h3>{{ message }}</h3>
 
-<p>Currently there are {{ nChannels }} enabled channels. Last EPG grabbing was on {{lastGrabbingTime}}.</p>
+<p>Currently there are {{ nChannels }} enabled channels. Last EPG grabbing was on {{ lastGrabbingTime }}.</p>
 
 <p>Last used <a href="/files/wgmulti.config.json" target="_blank">wgmulti.config.json</a>
 <br />
 </p>
 
 Select WebGrab options and click Run:
-<br /><br />
+<br />
+<br />
 <select name="webgrab_configuration_id" id="webgrab_configuration_id">
 {% for config in configs %}
-    <option value="{{ config.id }}">{{ config.name }}</option>
+  <option value="{{ config.id }}">{{ config.name }}</option>
 {% endfor %}
 </select>
 
@@ -68,91 +79,108 @@ Select WebGrab options and click Run:
 
 <br />
 <br />
-<p id="regenerateP">Regenerate EPG (combine all channel guides in case of corrections):
-</p>
+<p id="regenerateP">Regenerate EPG (combine all channel guides in case of corrections):</p>
 <button id="regenerateEpg">Regenerate</button>
 <br />
 <br />
 
+Status:
+<br />
 <pre id="status">
+{% if is_running %}Running...{% else %}Not running.{% endif %}
 </pre>
 
-<pre id="processes">
-</pre>
+Processes:
+<br />
+<pre id="processes">{% if is_running %}Getting list of processes...{% else %}None{% endif %}</pre>
+
+Log:
+<br />
+<textarea id="log" rows="10" cols="300">{{ log_content }}</textarea>
+<br />
 
 {% endblock %}
 
 {% block scripts %}
   <script>
 $( document ).ready(function() {
-      var loader = $("#loader");
-      var process = "wgmulti.exe";
-      var processes = $("#processes");
-      var status = $("#status");
-      var loader = $("#loader");
-      var runAll = $("#runAll");
-      var regenerateEpg = $("#regenerateEpg");
-      var regenerateP = $("regenerateP");
-      var cancelGrabbing = $("#cancelGrabing");
-      var reportRetrieved = false;
-      setInterval(checkGrabbingStatus, 5000);
+  var logHandle;
+  var loader = $("#loader");
+  var process = "wgmulti.exe";
+  var processes = $("#processes");
+  var status = $("#status");
+  var log = $("#log");
+  var loader = $("#loader");
+  var runAll = $("#runAll");
+  var regenerateEpg = $("#regenerateEpg");
+  var regenerateP = $("regenerateP");
+  var cancelGrabbing = $("#cancelGrabing");
+  var reportRetrieved = false;
+  setInterval(checkGrabbingStatus, 5000);
+  log.scrollTop(log[0].scrollHeight);
 
-    function getReport() {
-        $.ajax({
-            url: "grabbing/epg/report",
-            dataType: "json",
-            success: function (data) {
-                status.empty();
-                if (data.status) {
-                  status.append("Last grabbing report:<br>Total grabbed channels: " + data.report.total + "<br>");
-                  status.append("Channels with EPG: " + data.report.channelsWithEpg + "<br>");
-                  status.append("Channels without EPG: " + data.report.channelsWithoutEpg + "<br>");
-                  status.append("Generation time: " + data.report.generationTime + "<br>");
-                  status.append("Generated on: " + data.report.generatedOn + "<br>");
-                  status.append("EPG file size: " + data.report.fileSize + " (bytes) <br>");
-                  status.append("EPG file md5 hash: " + data.report.md5hash + "<br>");
-                } else {
-                  status.append("Error: " + data.details);
-                }
-                reportRetrieved = true;
-            }
-        });
-    }
+  function getReport() {
+    $.ajax({
+      url: "grabbing/epg/report",
+      dataType: "json",
+      success: function (data) {
+        status.empty();
+        if (data.status) {
+          status.append("Last grabbing report:<br>Total grabbed channels: " + data.report.total + "<br>");
+          status.append("Channels with EPG: " + data.report.channelsWithEpg + "<br>");
+          status.append("Channels without EPG: " + data.report.channelsWithoutEpg + "<br>");
+          status.append("Generation time: " + data.report.generationTime + "<br>");
+          status.append("Generated on: " + data.report.generatedOn + "<br>");
+          status.append("EPG file size: " + data.report.fileSize + " (bytes) <br>");
+          status.append("EPG file md5 hash: " + data.report.md5hash + "<br>");
+        } else {
+          status.append("Error: " + data.details);
+        }
+        reportRetrieved = true;
+      }
+    });
+  }
 
-    function checkGrabbingStatus() {
-        $.ajax({
-            url: 'grabbing/run/status/' + process,
-            dataType: 'json',
-            success: function (data) {
-                if (data.isRunning) {
+  function checkGrabbingStatus() {
+    $.ajax({
+      url: 'grabbing/run/status/' + process,
+      dataType: 'json',
+      success: function (data) {
+        if (data.isRunning) 
+        {
                     runAll.attr("disabled", true);
                     processes.text(data.details);
                     cancelGrabbing.show();
                     loader.show();
-                } else {
-                    runAll.attr("disabled", false);
-                    process = 'wgmulti.exe';
-                    cancelGrabbing.hide();
-                    loader.hide();
-                    regenerateP.show();
-                    //if (!reportRetrieved)
-                    //  getReport();
-                }
-            }
-        });
-    }
+        } 
+        else 
+        {
+          runAll.attr("disabled", false);
+          process = 'wgmulti.exe';
+          cancelGrabbing.hide();
+          loader.hide();
+          regenerateP.show();
+          //if (!reportRetrieved) {
+          //  getReport();
+        }
+      }
+    });
+  }
 
-    $("#runAll").click(function (e) {
-        $(this).attr("disabled", true);
-        status.empty();
-        processes.empty();
-        selectEl = document.getElementById('webgrab_configuration_id');
-        id = selectEl.options[selectEl.selectedIndex].value;
-        regenerateEpg.hide();
-        $.ajax({
-            url: "grabbing/run/all/" + id,
-            dataType: 'json',
-            success: function (data) {
+  $("#runAll").click(function (e) {
+    $(this).attr("disabled", true);
+    status.empty();
+    processes.empty();
+    log.empty();
+    logHandle = setInterval(getLog, 3000);
+    selectEl = document.getElementById('webgrab_configuration_id');
+    id = selectEl.options[selectEl.selectedIndex].value;
+    regenerateEpg.hide();
+    $.ajax({
+      url: "grabbing/run/all/" + id,
+      dataType: 'json',
+      success: function (data) 
+      {
                 let status = $('#status');
                 status.append(data.config.message + '<br>');
                 status.append(data.siteinis.message + '<br>');
@@ -172,9 +200,9 @@ $( document ).ready(function() {
                     //regenerateEpg.show();
 
                 }
-            }
-      });
+      }
     });
+  });
 
    regenerateEpg.click(function (e) {
         $(this).attr("disabled", true);
@@ -197,6 +225,21 @@ $( document ).ready(function() {
         });
     });
 
+    var getLog = function() {
+      $.ajax({
+        type: 'GET',
+        url: "{% url 'get-log' '' %}"
+      })
+      .done(function(data) {
+      })
+      .always(function(data) {
+        var textarea = $("#log");
+        textarea.html(data)
+        textarea.scrollTop(textarea[0].scrollHeight);
+      })
+      .fail(function(data) {
+      });
+    };
 });
 
   </script>

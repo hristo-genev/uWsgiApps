@@ -518,3 +518,14 @@ def kill_process_by_id(id):
     details = str(er)
 
   return (status, details)
+
+
+def get_log_content(log_file_path=None):
+  content = ''
+  try:
+    logger.debug("Getting log content from file: %s" % log_file_path)
+    content = open(log_file_path, 'r', encoding='utf-8').read()
+  except Exception as er:
+    logger.exception(er)
+    content = traceback.format_exc()
+  return content

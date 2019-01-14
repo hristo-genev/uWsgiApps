@@ -2,6 +2,15 @@
 
 {% block content %}
 
+<style>
+div.uptodate {
+  width:10px;
+  height:10px;
+  margin:5px;
+  background-color: green;
+}
+</style>
+
 <h1>Channels</h1>
 
 Found {{ object_list.count }} enabled channels.
@@ -18,7 +27,7 @@ Found {{ object_list.count }} enabled channels.
 <table class="maintable">
   <thead>
     <tr>
-      <th>Channel name</th>
+      <th>Name</th>
       <th>Xmltv id</th>
       <th>Siteinis</th>
       <th>Grabbed programs</th>
@@ -27,6 +36,7 @@ Found {{ object_list.count }} enabled channels.
       <th>First show start time</th>
       <th>Last show start time</th>
       <th>Edit channel</th>
+      <th>Uptodate</th>
     </tr>
   </thead>
   <tbody>
@@ -40,8 +50,9 @@ Found {{ object_list.count }} enabled channels.
             <td>{{ channel.siteiniName }}</td>
             <td>{{ channel.siteiniIndex }}</td>
             <td>{{ channel.firstShowStartsAt }}</td>
-            <td>{{ channel.lastShowStartsAt }}</td>
+            <td class="lastShowTime">{{ channel.lastShowStartsAt }}</td>
             <td><a href="{% url 'admin:epgapp_channel_change' channel.id %}">Edit</a></td>
+            <td><div class="uptodate" style="background-color: {{ channel.uptodateColor  }}"></div></td>
         </tr>
     {% empty %}
         <tr><td colspan="3">No stats yet.</td></tr>
@@ -66,4 +77,22 @@ Found {{ object_list.count }} enabled channels.
     </div>
 {% endif %}
 
+<script>
+var today = new Date();
+var todayDate = parseInt(today.getFullYear + ("0" + today.getMonth()).slice(-2) + ("0" + today.getDay()).slice(-2));
+
+$( document ).ready(function() {
+
+  $(':lastShowTime').each(function(el, i) {
+
+    endShowDate = parseInt(td.slice(0,8));
+
+    if (todayDate < endShowDate) {
+      $(this).next().html("<img src=\"/static/admin/img/icon-no.svg\">");
+    }
+
+  });
+  
+});
+</script>
 {% endblock %}

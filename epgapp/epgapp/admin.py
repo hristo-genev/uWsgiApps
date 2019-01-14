@@ -28,7 +28,7 @@ class ChannelAdmin(admin.ModelAdmin):
   list_display_links  = [ 'name' ]
   search_fields       = [ 'name', 'category__name' ]
   list_display        = [ 'name', 'xmltv_id', 'slug', 'enabled', 'get_siteinis', 'get_timeshifts' ]
-  list_editable       = [ 'enabled', 'xmltv_id', 'slug' ]
+  list_editable       = [ 'xmltv_id', 'slug' ]
   list_filter         = [ 'category' ]
   list_per_page       = 50
   inlines             = [ GrabbersInline, TimeshiftsInline, AlternativeNameInline ]

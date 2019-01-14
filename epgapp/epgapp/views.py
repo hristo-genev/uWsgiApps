@@ -46,21 +46,23 @@ def contact(request):
 
 def grabbing(request):
 
-    assert isinstance(request, HttpRequest)
+  assert isinstance(request, HttpRequest)
+  is_running = isRunning()
 
-    return render(
-        request,
-        'grabbing.html',
-        {
-            'title':'Grabbing',
-            'message': '',
-            'year': datetime.now().year,
-            'isRunning': isRunning(),
-            'configs': Settings.objects.all(),
-            'nChannels': len(Channel.objects.filter(enabled=True)),
-            'lastGrabbingTime': get_last_grabbing_time()
-        }
-    )
+  return render(
+    request,
+    'grabbing.html',
+    {
+      'title':'Grabbing',
+      'message': '',
+      'year': datetime.now().year,
+      'isRunning': is_running,
+      'configs': Settings.objects.all(),
+      'nChannels': len(Channel.objects.filter(enabled=True)),
+      'lastGrabbingTime': get_last_grabbing_time(),
+      'log_content': get_log_content(os.path.join(APP_DIR, 'logs/wgmulti.log.txt'))
+    }
+  )
 
 @login_required
 def run(request, id):
@@ -118,6 +120,24 @@ def settings(request):
     }
   )
 
+def getUptodateColor(dateInEpg):
+  try:
+    today = '%s%02d%02d' % (datetime.now().year, datetime.now().month, datetime.now().day)
+    dateInEpg = dateInEpg[0:8]
+    itoday = int(today)
+    idateInEpg = int(dateInEpg)
+
+    logger.debug("today: %s, epg: %s" % (today, dateInEpg))
+
+    if dateInEpg > today:
+      return "green"
+    elif dateInEpg == today:
+      return "yellow"
+    else:
+      return "red"
+  except:
+    return "red"
+
 
 class ChannelListView(ListView):
 
@@ -147,6 +167,7 @@ class ChannelListView(ListView):
             channel.siteiniIndex = ch.get('siteiniIndex')
             channel.firstShowStartsAt = ch.get('firstShowStartsAt')
             channel.lastShowStartsAt = ch.get('lastShowStartsAt')
+            channel.uptodateColor = getUptodateColor(channel.lastShowStartsAt)
             continue
 
       return channels
@@ -318,19 +339,6 @@ def epg_download(request):
   return redirect('/temp/epg.xml')
 
 
-@login_required
-def get_epg_log(request, siteini):
-
-  try:
-    log_file_path = os.path.join(APP_DIR, 'temp/data/', siteini, 'WebGrab++.log.txt')
-    content = open(log_file_path, 'r', encoding='utf-8').read()
-
-  except Exception as er:
-    logger.exception(er)
-    content = traceback.format_exc()
-
-  return HttpResponse(content, content_type="text/plain")
-
 
 def get_epg_report(request):
   return JsonResponse( get_report() )
@@ -379,15 +387,15 @@ def cancel_grabbing(request, processId):
   (status, details) = kill_process_by_id(processId)
   return JsonResponse( { 'status': status, 'details': details} )
 
-def get_wgmulti_log(request):
 
-  try:
-    log_file_path = os.path.join(APP_DIR, 'temp/data/wgmulti.txt')
-    content = open(log_file_path, 'r', encoding='utf-8').read()
+@login_required
+def get_epg_log(request, siteini=None):
 
-  except Exception as er:
-    logger.exception(er)
-    content = traceback.format_exc()
+  if siteini:
+    log_file_path = os.path.join(APP_DIR, 'temp/data/', siteini, 'WebGrab++.log.txt')
+  else:
+    log_file_path = os.path.join(APP_DIR, 'logs/wgmulti.log.txt')
+  content = get_log_content(log_file_path)
 
   return HttpResponse(content, content_type="text/plain")
 
