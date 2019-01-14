@@ -118,3 +118,7 @@ class GrabbersAdmin(admin.ModelAdmin):
   list_filter         = ['siteini']
   #autocomplete_fields = ['name']
 admin.site.register(Grabbers,GrabbersAdmin)
+
+class SchedulerAdmin(admin.ModelAdmin):
+  list_display        = ['name', 'settings', 'start_time', 'run_interval', 'instances']
+admin.site.register(Scheduler,SchedulerAdmin)

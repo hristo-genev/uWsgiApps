@@ -18,7 +18,7 @@
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
-    <WebBrowserUrl>http://localhost/siteinis</WebBrowserUrl>
+    <WebBrowserUrl>http://localhost/admin/</WebBrowserUrl>
     <LaunchProvider>Django launcher</LaunchProvider>
     <DjangoSettingsModule>epgapp.settings</DjangoSettingsModule>
     <OutputPath>.</OutputPath>

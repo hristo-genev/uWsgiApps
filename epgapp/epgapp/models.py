@@ -33,7 +33,7 @@ class Siteini(models.Model):
 
   class Meta:
     ordering = ['name']
-    verbose_name_plural = '     Siteinis'
+    verbose_name_plural = '       Siteinis'
 
 #class Broadcaster(models.Model):
 #  name = models.CharField(max_length=256)
@@ -56,7 +56,7 @@ class Category(models.Model):
     return self.name
 
   class Meta:
-    verbose_name_plural = '  Channel categories'
+    verbose_name_plural = '        Channel categories'
 
 
 class Channel(models.Model):
@@ -97,7 +97,7 @@ class Channel(models.Model):
 
   class Meta: 
     ordering = ['-name']
-    verbose_name_plural = '       Channels'
+    verbose_name_plural = '          Channels'
 
 class AlternativeName(models.Model):
   channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
@@ -122,7 +122,7 @@ class Timeshifts(models.Model):
   
   class Meta: 
     ordering = ['offset']
-    verbose_name_plural = 'Timeshifted channels'
+    verbose_name_plural = '         Timeshifted channels'
 
 class Epg(models.Model):
   channel   = models.ForeignKey(Channel, on_delete=models.CASCADE)
@@ -201,6 +201,19 @@ class Settings(models.Model):
                                       help_text='The user name needed by the proxy')
   proxy_pass    = models.CharField(default="", max_length=16, blank=True, help_text='The password needed by the proxy')
   useragent     = models.CharField(blank=True, max_length=512, help_text='Add any user-agent or just \'random\' and the program will generate a random string')
+  
+
+  def __str__(self):
+    return self.name
+
+  class Meta:
+    verbose_name = "Configurations"
+    verbose_name_plural = "      WebGrab Configurations"
+
+
+class Scheduler(models.Model):
+  name          = models.CharField('Name of the scheduler', default='Default scheduler', max_length=256)
+  settings      = models.ForeignKey(Settings, on_delete=models.CASCADE, help_text='Select webgrab configuration')
   start_time    = models.CharField(max_length=5, default="05:00")
   run_interval  = models.IntegerField('Run every N days', default=1)
   instances     = models.IntegerField('Number of processes', default=1, 
@@ -211,9 +224,10 @@ class Settings(models.Model):
   only_title    = models.BooleanField('Copy only title of timeshifted channels', default=True)
   report        = models.BooleanField('Generate report file', default=True)
 
+  
   def __str__(self):
     return self.name
 
   class Meta:
-    verbose_name = "Configurations"
-    verbose_name_plural = "    WebGrab Configurations"
+    verbose_name = "Grabbing Schedulers"
+    verbose_name_plural = "     Grabbing Schedulers"
