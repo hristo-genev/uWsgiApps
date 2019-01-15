@@ -25,11 +25,6 @@ class ChannelSerializer(serializers.ModelSerializer):
     model  = Channel
     fields = [ 'name', 'xmltv_id', 'update', 'siteinis', 'timeshifts' ]
 
-#class CategorySerializer(serializer.ModelSerializer):
-#  class Meta:
-#    meta = Category
-#    fields = ['name']
-
 #class MapSerializer(serializers.ModelSerializer):
 #  timeshifts = TimeshiftsSerializer(source='timeshifts_set', many=True)
 #  category = CategorySerializer(source='category_set', many=True}

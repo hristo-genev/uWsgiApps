@@ -57,8 +57,7 @@ def grabbing(request):
       'message': '',
       'year': datetime.now().year,
       'isRunning': is_running,
-      'configs': Settings.objects.all(),
-      'scheduler': Scheduler.objects.all(),
+      'schedulers': Scheduler.objects.all(),
       'nChannels': len(Channel.objects.filter(enabled=True)),
       'lastGrabbingTime': get_last_grabbing_time(),
       'log_content': get_log_content(os.path.join(APP_DIR, 'logs/wgmulti.log.txt'))
@@ -74,10 +73,11 @@ def run(request, id):
 
     result = {}
 
-    settings = Settings.objects.get(id=id)
-    data = generate_settings_file_content(settings)
-    result['config']   = save_config_file(settings)
-    result['settings'] = save_settings_file(data)
+    sceduler  = Scheduler.objects.get(id=id)
+    settings  = Settings.objects.get(id=sceduler.id)
+    json_data = generate_settings_file_content(settings)
+    
+    result['settings'] = save_settings_file(json_data)
     result['siteinis'] = save_siteinis()
     result['grabbing'] = start_grabbing()
 

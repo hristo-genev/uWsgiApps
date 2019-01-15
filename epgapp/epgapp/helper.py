@@ -52,7 +52,7 @@ def isRunning(processId='wgmulti.exe'):
       logger.exception('Error during isRunning execution')
       return False
 
-def save_config_file(settings=None):
+def save_config_file(scheduler=None):
   """
   Saves the wgmulti.exe.config file
   """
@@ -73,10 +73,10 @@ def save_config_file(settings=None):
     updateKey('GrabingTempFolder', os.path.join(temp_path, 'data'))
     updateKey('ConfigDir', temp_path)
     updateKey('WebGrabFolder', os.path.join(APP_DIR, 'bin'))
-    updateKey('MaxAsyncProcesses', str(settings.instances))
-    updateKey('RemoveChannelsWithNoProgrammes', str(settings.remove_empty))
-    updateKey('CopyOnlyTitleForOffsetChannel', str(settings.only_title))
-    updateKey('GenerateResultsReport', str(settings.report))
+    updateKey('MaxAsyncProcesses', str(scheduler.instances))
+    updateKey('RemoveChannelsWithNoProgrammes', str(scheduler.remove_empty))
+    updateKey('CopyOnlyTitleForOffsetChannel', str(scheduler.only_title))
+    updateKey('GenerateResultsReport', str(scheduler.report))
     updateKey('ReportFolder', os.path.join(APP_DIR, 'logs'))
 
     tree.write(config_file_path)
@@ -91,7 +91,7 @@ def save_config_file(settings=None):
 
   return { 'status': status, 'message': message }
 
-def generate_settings_file_content(settings=None, channels=None):
+def generate_settings_file_content(settings, channels=None):
   """
   Export settings and channels to JSON
   """
@@ -120,7 +120,7 @@ def generate_settings_file_content(settings=None, channels=None):
   return None
 
 
-def save_settings_file(data, location=None, file_name=None):
+def save_settings_file(json_data, location=None, file_name=None):
   """
   Saves settings and channels in config JSON file
   """
@@ -128,7 +128,7 @@ def save_settings_file(data, location=None, file_name=None):
   config_file_path = get_config_file_path(location, file_name)
 
   try:
-    content = JSONRenderer().render(data, renderer_context={'indent': 2})
+    content = JSONRenderer().render(json_data, renderer_context={'indent': 2})
     with open(config_file_path, 'wb') as w:
       w.write(content)
 
@@ -385,8 +385,9 @@ def get_running_processes_details():
 
 def get_last_grabbing_time():
   try:
-    return getReport()['report']['generatedOn']
-  except:
+    return get_report()['report']['generatedOn']
+  except Exception as er:
+    logger.debug(er)
     return '00:00:00'
 
 
@@ -528,5 +529,5 @@ def get_log_content(log_file_path=None):
     content = open(log_file_path, 'r', encoding='utf-8').read()
   except Exception as er:
     logger.exception(er)
-    content = traceback.format_exc()
+    content = "Error! Could not load the log file!"
   return content
