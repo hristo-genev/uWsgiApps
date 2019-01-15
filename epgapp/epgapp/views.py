@@ -58,6 +58,7 @@ def grabbing(request):
       'year': datetime.now().year,
       'isRunning': is_running,
       'configs': Settings.objects.all(),
+      'scheduler': Scheduler.objects.all(),
       'nChannels': len(Channel.objects.filter(enabled=True)),
       'lastGrabbingTime': get_last_grabbing_time(),
       'log_content': get_log_content(os.path.join(APP_DIR, 'logs/wgmulti.log.txt'))

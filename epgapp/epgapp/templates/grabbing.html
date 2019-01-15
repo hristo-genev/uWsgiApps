@@ -64,8 +64,8 @@ Select WebGrab options and click Run:
 <br />
 <br />
 <select name="webgrab_configuration_id" id="webgrab_configuration_id">
-{% for config in configs %}
-  <option value="{{ config.id }}">{{ config.name }}</option>
+{% for scheduler in schedulers %}
+  <option value="{{ scheduler.id }}">{{ scheduler.name }}</option>
 {% endfor %}
 </select>
 
@@ -116,6 +116,7 @@ $( document ).ready(function() {
   var regenerateP = $("regenerateP");
   var cancelGrabbing = $("#cancelGrabing");
   var reportRetrieved = false;
+
   setInterval(checkGrabbingStatus, 5000);
   log.scrollTop(log[0].scrollHeight);
 
@@ -148,10 +149,10 @@ $( document ).ready(function() {
       success: function (data) {
         if (data.isRunning) 
         {
-                    runAll.attr("disabled", true);
-                    processes.text(data.details);
-                    cancelGrabbing.show();
-                    loader.show();
+           runAll.attr("disabled", true);
+           processes.text(data.details);
+           cancelGrabbing.show();
+           loader.show();
         } 
         else 
         {
@@ -160,6 +161,7 @@ $( document ).ready(function() {
           cancelGrabbing.hide();
           loader.hide();
           regenerateP.show();
+          clearInterval(logHandle);
           //if (!reportRetrieved) {
           //  getReport();
         }
@@ -172,7 +174,7 @@ $( document ).ready(function() {
     status.empty();
     processes.empty();
     log.empty();
-    logHandle = setInterval(getLog, 3000);
+    logHandle = setTimeout(setInterval(getLog, 3000), 5000);
     selectEl = document.getElementById('webgrab_configuration_id');
     id = selectEl.options[selectEl.selectedIndex].value;
     regenerateEpg.hide();
@@ -181,25 +183,24 @@ $( document ).ready(function() {
       dataType: 'json',
       success: function (data) 
       {
-                let status = $('#status');
-                status.append(data.config.message + '<br>');
-                status.append(data.siteinis.message + '<br>');
-                status.append(data.settings.message + '<br>');
-                status.append(data.grabbing.message + '<br>');
+        let status = $('#status');
+        status.append(data.config.message + '<br>');
+        status.append(data.siteinis.message + '<br>');
+        status.append(data.settings.message + '<br>');
+        status.append(data.grabbing.message + '<br>');
                 
-                process = data.grabbing.processId;
+        process = data.grabbing.processId;
 
-                if (data.grabbing.status) {
-                    cancelGrabbing.show();
-                    loader.show();
-                }
-                else 
-                {
-                    //loader.hide();
-                    //cancelGrabbing.hide();
-                    //regenerateEpg.show();
-
-                }
+        if (data.grabbing.status) {
+          cancelGrabbing.show();
+          loader.show();
+        }
+        else 
+        {
+          //loader.hide();
+          //cancelGrabbing.hide();
+          //regenerateEpg.show();
+        }
       }
     });
   });

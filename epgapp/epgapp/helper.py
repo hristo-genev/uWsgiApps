@@ -245,8 +245,9 @@ def get_report():
   status = False
   report = None
   try:
-    import json
-    with open (os.path.join(APP_DIR, 'logs', 'wgmulti.report.json'), encoding='utf-8') as r:
+    file_path = os.path.join(APP_DIR, 'logs', 'wgmulti.report.json')
+    logger.debug("Getting report from file: %s" % file_path)
+    with open (file_path, encoding='utf-8') as r:
       report = json.load(r)
     status = True
   except Exception as er:
