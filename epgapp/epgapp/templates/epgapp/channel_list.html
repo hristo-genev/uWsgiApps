@@ -77,21 +77,21 @@ Found {{ object_list.count }} enabled channels.
     </div>
 {% endif %}
 
+{% endblock %}
+
+{% block scripts %}
 <script>
-var today = new Date();
-var todayDate = parseInt(today.getFullYear + ("0" + today.getMonth()).slice(-2) + ("0" + today.getDay()).slice(-2));
+//var today = new Date();
+//var todayDate = parseInt(today.getFullYear + ("0" + today.getMonth()).slice(-2) + ("0" + today.getDay()).slice(-2));
 
 $( document ).ready(function() {
 
-  $(':lastShowTime').each(function(el, i) {
-
-    endShowDate = parseInt(td.slice(0,8));
-
-    if (todayDate < endShowDate) {
-      $(this).next().html("<img src=\"/static/admin/img/icon-no.svg\">");
-    }
-
-  });
+  //$(':lastShowTime').each(function(el, i) {
+  //  endShowDate = parseInt(td.slice(0,8));
+  //  if (todayDate < endShowDate) {
+  //    $(this).next().html("<img src=\"/static/admin/img/icon-no.svg\">");
+  //  }
+  //});
   
 });
 </script>

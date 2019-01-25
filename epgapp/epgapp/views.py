@@ -73,10 +73,11 @@ def run(request, id):
 
     result = {}
 
-    sceduler  = Scheduler.objects.get(id=id)
-    settings  = Settings.objects.get(id=sceduler.id)
+    scheduler  = Scheduler.objects.get(id=id)
+    settings  = Settings.objects.get(id=scheduler.settings_id)
     json_data = generate_settings_file_content(settings)
-    
+
+    result['config']   = save_config_file(scheduler)
     result['settings'] = save_settings_file(json_data)
     result['siteinis'] = save_siteinis()
     result['grabbing'] = start_grabbing()
@@ -182,6 +183,8 @@ class ChannelDetailView(DetailView):
         file_path = os.path.join(APP_DIR, 'temp/', context['channel'].xmltv_id + '.epg.xml')
         context['content'] = get_raw_epg(file_path)
         context['now'] = timezone.now()
+        context['xmltv_id'] = context['channel'].xmltv_id
+
         return context
 
 
@@ -233,13 +236,16 @@ def grab(request, slug):
 
   channel = Channel.objects.get(slug=slug)
   siteinis = Grabbers.objects.filter(channel=channel)
+  configs = Settings.objects.all();
 
   return render(
     request,
-    'epgapp/grab.html',
+    'epgapp/grab_channel.html',
     {
       'channel': channel,
-      'siteinis': siteinis
+      'siteinis': siteinis,
+      'configs': configs,
+      'update_types': UPDATE_TYPES
     }
   )
 
@@ -300,6 +306,12 @@ def run_siteini_test(request):
   except Exception as ex:
     logger.exception(str(ex))
     return JsonResponse({'status': False, 'message': ex, 'details': traceback.format_exc() })
+
+
+def grab_single_channel_epg(request):
+
+  pass
+
 
 
 @login_required
@@ -400,3 +412,16 @@ def get_epg_log(request, siteini=None):
 
   return HttpResponse(content, content_type="text/plain")
 
+@login_required
+def save_modified_epg(request, slug):
+  try:
+    content = request.POST.get("content")
+    xmltv_id = request.POST.get("xmltv_id")
+    file_path = os.path.join(APP_DIR, 'temp/', xmltv_id + '.epg.xml')
+
+    (status, details) = save_content_to_file(content, file_path)
+  except Exception as er:
+    logger.error(ex)
+    details = str(er)
+    status = False
+  return JsonResponse( { 'status': status, 'details': details} )

@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>{{channel.name}}</h1>
+
+<h3>Available siteinis:</h3>
+
+
+<input type="hidden" name="channel_name" id="channel_name" value="{{channel.name}}" />
+<input type="hidden" name="xmltv_id" id="xmltv_id" value="{{channel.xmltv_id}}" />
+
+<table>
+  <thead>
+    <tr>
+      <th>Siteini</th>
+      <th>Site_id</th>
+      <th></th>
+    </tr>
+  </thead>
+  {% for siteini in siteinis %}
+  <tr>
+    <td><input type="radio" name="siteini_id" value="{{siteini.siteini.id}}" /> {{siteini.siteini.name}}</td>
+    <td id="siteini_id_{{siteini.siteini.id}}"><!--a href="{{ siteini.siteini.get_absolute_url }}">{{ siteini.siteini.name }}</a--> {{siteini.site_id}}</td>
+    <!--td>{{siteini.site_id}} <a href="{{ siteini.siteini.get_absolute_url }}">{{ siteini.siteini.name }}</a></td-->
+  </tr>
+{% empty %}
+  <tr><td>No siteinis definied.</td></tr>
+{% endfor %}
+
+        <tr>
+            <td>Channel update type: </td>
+            <td colspan="2">
+                <select name="update" id="update">
+                {% for type in update_types %}
+                    <option value="{{ type.0 }}">{{ type.1 }}</option>
+                {% endfor %}
+                </select>
+            </td>
+        </tr>
+  <tr>
+    <td>WebGrab configuration: </td>
+    <td>
+      <select name="webgrab_configuration_id" id="webgrab_configuration_id">
+      {% for config in configs %}
+        <option value="{{ config.id }}">{{ config.name }}</option>
+        {% endfor %}
+        </select>
+     </td>
+     <td><a id="webgrab_configuration_edit_link" href="{% url 'admin:epgapp_settings_change' configs.0.id %}">Edit</a> | <a id="webgrab_configuration_add_link" href="{% url 'admin:epgapp_settings_add' %}">Add</a></td>    
+  </tr>
+  <tr>
+    <td colspan="2"><button class="start" id="">Run</button></td>
+  </tr>
+</table>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementsByName("siteini_id")[0].checked = true;
+document.getElementById("update").selectedIndex = 1;
+
+
+$(document).ready(function () {
+
+  $("#start").submit(function (event) {
+    var form = $(this);
+    $("#startTest").attr('disabled', true);
+    //$("#cancelTest").show();
+    event.preventDefault();
+    var loader = $("#loader");
+    loader.show();
+            var a = $("#logFileUrl");
+            // Update siteini name from selected dropdown
+            siteini_name = $("#siteini_id :selected").text();
+            a.attr("href", '/logs/' + siteini_name);
+            a.show();
+
+            $.ajax({
+                type: 'POST',
+                url: "run/", //{#% url 'run-siteini-test' %}",
+                data: form.serialize(),
+                dataType: 'json'
+            })
+            .done(function(data) {
+                $('#status').html('Status: ' + data.message);
+                processId = data.processId;
+                if (data.details)
+                    $('#content').html(data.details);
+                statusHandle = setInterval(checkGrabbingStatus, 5000);
+                setTimeout(logHandle = setInterval(getLog, 3000), 3000);
+            })
+            .fail(function(data) {
+                $('#status').html(data.responseText);
+                $("#startTest").attr('disabled', false);
+                loader.style.display = "none";
+            });
+
+        });
+
+});
+
+</script>
+{% endblock %}

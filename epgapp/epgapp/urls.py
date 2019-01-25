@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^channels/$', epgapp.views.ChannelListView.as_view(), name='channel-list'),
     url(r'^channels/map/$', epgapp.views.map, name='channels-map'),
     url(r'^channel/(?P<slug>.+)/grab/$', epgapp.views.grab, name='grab'),
+    url(r'^channel/(?P<slug>.+?)/epg/save$', epgapp.views.save_modified_epg, name='save-channel-epg'),
     url(r'^channel/(?P<slug>.+?)/$', epgapp.views.ChannelDetailView.as_view(), name='channel-detail'),
     url(r'^siteinis/$', epgapp.views.SiteiniListView.as_view(), name='siteini-list'),
     url(r'^siteinis/test/$', epgapp.views.siteini_test, name='siteini-test'),
@@ -40,4 +41,6 @@ urlpatterns = [
     url(r'^pythongrabbers/run/(?P<pythongrabbername>.*?)/(?P<startdaysahead>\d)/(?P<grabfordays>\d)/', epgapp.views.python_grabber, name='run-python-grabber'),
     url(r'^pythongrabbers/epg/(?P<pythongrabbername>.*?)/(?P<day>\d+?).json', epgapp.views.get_json_epg, name='get-json-epg'),
     url(r'^logs/(?P<siteini>.*)$', epgapp.views.get_epg_log, name='get-log'),
+    #url(r'run/webgrab/siteini/', epgapp.views.grab_test_siteini, name='grab-test-siteini'),
+    url(r'run/webgrab/channel/', epgapp.views.grab_single_channel_epg, name='grab-channel-epg'),
 ]

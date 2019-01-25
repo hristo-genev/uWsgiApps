@@ -531,3 +531,17 @@ def get_log_content(log_file_path=None):
     logger.exception(er)
     content = "Error! Could not load the log file!"
   return content
+
+
+def save_content_to_file(content, file_path):
+  status = False
+  details = ""
+  try:
+    with open(file_path, 'w') as w:
+      w.write(content)
+      status = True
+  except Exception as er:
+    details = str(er)
+    logger.exception(er)
+
+  return (status, details)

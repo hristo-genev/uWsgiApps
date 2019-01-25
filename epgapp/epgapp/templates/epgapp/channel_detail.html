@@ -28,12 +28,18 @@
 Last EPG grabbed for this channel: 
 <br />
 <br />
-<button id="editEpg">Edit</button>
-<button id="saveEpg" style="display:none;">Save</button>
-<button id="cancelEpg" style="display: none;">Cancel</button>
-<br />
-<br />
-<textarea id="log" rows="10" cols="300" readonly>{{content}}</textarea>
+
+<form method="post" action="epg/save" id="saveEpgForm">
+  {% csrf_token %}
+  <input type="hidden" value="{{xmltv_id}}" name="xmltv_id" />
+  <button id="editEpg">Edit</button>
+  <input type="submit" id="saveEpg" style="display:none;" value="Save" />
+  <button id="cancelEpg" style="display: none;">Cancel</button>
+  <br />
+  <br />
+  <textarea name="content" id="log" rows="10" cols="300" readonly>{{content}}</textarea>
+</form>
+
 {% endblock %}
 
 {% block scripts %}
@@ -44,26 +50,51 @@ $(document).ready(function () {
   var saveBtn = $("#saveEpg");
   var cancelBtn = $("#cancelEpg");
   var textarea = $("#log");
+  var saveEpgForm = $("#saveEpgForm");
 
-  editBtn.click(function(){
+  editBtn.click(function(e){
+    e.preventDefault();
     $(this).hide();
     saveBtn.show();
+    saveBtn.attr("disabled", false);
     cancelBtn.show();
     textarea.attr('readonly', false);
   });
 
-
-  cancelBtn.click(function() {
+  cancelBtn.click(function(e) {
+    e.preventDefault();
     $(this).hide();
     saveBtn.hide();
     editBtn.show();
     textarea.attr('readonly', true);
   });
 
-  saveBtn.click(function(){
-    alert("Save clicked");
+  saveEpgForm.submit( function(e) {
+    e.preventDefault();
+    saveBtn.attr("disabled", true);
+    $.ajax({
+      url: saveEpgForm.attr("action"),
+      type: saveEpgForm.attr("method"),
+      data: saveEpgForm.serialize(),
+      dataType: 'json',
+      success: function (data) {
+        if (data.status) {
+          $('#status').html('Successfully saved');
+        } else {
+          $('#status').html('Error during saving!<br />' + data.details);
+          clearTimeout(logHandle);
+        }
+        saveBtn.hide();
+        cancelBtn.hide();
+        editBtn.show();
+        textarea.attr("readonly", true);
+      }
+    })
+    .fail(function (data) {
+      $('#status').html(data.responseText);
+      clearTimeout(logHandle);
+    });
   });
-
 });
 </script>
 {% endblock %}
