@@ -42,9 +42,9 @@ admin.site.register(Channel, ChannelAdmin)
 class StreamAdmin(admin.ModelAdmin):
     list_display_links  = ['get_channel']
     search_fields       = ['get_channel']
-    list_display        = ['get_channel', 'stream_url', 'player_url', 'enabled', 'preferred']
+    list_display        = ['get_channel', 'stream_url', 'comment', 'enabled', 'preferred']
     list_filter         = ['channel']
-    list_editable       = ['player_url', 'preferred']
+    list_editable       = ['stream_url', 'preferred']
     #list_per_page       = 50
     #preserve_filters    = True
     #autocomplete_fields = ['channel']

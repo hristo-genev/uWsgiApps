@@ -56,7 +56,7 @@ class Stream(models.Model):
     enabled    = models.BooleanField(default=True);
     created    = models.DateTimeField(auto_now_add=True)
     modified   = models.DateTimeField(auto_now=True)
-    user_agent_id = models.ForeignKey(User_Agent, on_delete=models.CASCADE)
+    user_agent = models.ForeignKey(User_Agent, on_delete=models.CASCADE)
   
     def __str__(self):
         return self.channel.name
