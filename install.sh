@@ -17,14 +17,18 @@ pip3 install -r epgapp/requirements.txt
 
 echo "**************************************************"
 
-echo "Enabling nginx site"
+echo "Enabling nginx sites"
 link=${PWD}/nginx/epgapp.kodibg.org
-sudo ln -si $link /etc/nginx/sites-enabled/
+sudo ln -sif $link /etc/nginx/sites-enabled/
 echo `ls -la /etc/nginx/sites-enabled/epgapp.kodibg.org`
+
+link=${PWD}/nginx/freetvandradio.kodibg.org
+sudo ln -sif $link /etc/nginx/sites-enabled/
+echo `ls -la /etc/nginx/sites-enabled/freetvandradio.kodibg.org
 
 echo "Enabling uwsgi service"
 link=${PWD}/service/uwsgi.service
-sudo ln -si $link /etc/systemd/system/
+sudo ln -sif $link /etc/systemd/system/
 echo `ls -la /etc/systemd/system/uwsgi.service`
 
 echo "Creating temp folder"

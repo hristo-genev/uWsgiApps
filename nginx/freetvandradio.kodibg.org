@@ -1,0 +1,20 @@
+server {
+  listen 80;
+  server_name freetvandradio.kodibg.org;
+  listen [::]:80;
+
+  location = /favicon.ico { access_log off; log_not_found off; }
+
+  location /static/ {
+    root /home/g/uWsgiApps/freetvandradio/;
+  }
+
+  #location /files/ {
+  #  alias /home/g/uWsgiApps/freetvandradio/freetvandradio/temp/;
+  #}
+
+  location / {
+    include uwsgi_params;
+    uwsgi_pass unix:/run/uwsgi/freetvandradio.sock;
+  }
+}
