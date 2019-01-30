@@ -122,3 +122,8 @@ admin.site.register(Grabbers,GrabbersAdmin)
 class SchedulerAdmin(admin.ModelAdmin):
   list_display        = ['name', 'settings', 'start_time', 'run_interval', 'instances']
 admin.site.register(Scheduler,SchedulerAdmin)
+
+
+class ProxyAdmin(admin.ModelAdmin):
+  list_display = '__all__'
+admin.site.register(Proxy, ProxyAdmin)

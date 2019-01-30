@@ -201,7 +201,7 @@ class Settings(models.Model):
                                       help_text='The user name needed by the proxy')
   proxy_pass    = models.CharField(default="", max_length=16, blank=True, help_text='The password needed by the proxy')
   useragent     = models.CharField(blank=True, max_length=512, help_text='Add any user-agent or just \'random\' and the program will generate a random string')
-  
+
 
   def __str__(self):
     return self.name
@@ -224,10 +224,20 @@ class Scheduler(models.Model):
   only_title    = models.BooleanField('Copy only title of timeshifted channels', default=True)
   report        = models.BooleanField('Generate report file', default=True)
 
-  
+
   def __str__(self):
     return self.name
 
   class Meta:
     verbose_name = "Grabbing Schedulers"
     verbose_name_plural = "     Grabbing Schedulers"
+
+
+class Proxy(models.Model):
+  enabled = models.BooleanField()
+  name    = models.CharField('Name of python proxy', max_length=256)
+  content = models.TextField()
+
+  class Meta:
+    verbose_name = "Proxies"
+    verbose_name_plural = "Proxies"
