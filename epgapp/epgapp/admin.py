@@ -82,7 +82,7 @@ class SettingsAdmin(admin.ModelAdmin):
      ('Retry settings', {'fields': ['max_retries', 'retry_timeout', 'channeldelay', 'indexdelay', 'showdelay']}),
      ('More settings', {'fields': ['logging', 'mode', 'skip', 'useragent'] }),
      ('Proxy settings', {'fields': ['proxy_server', 'proxy_user', 'proxy_pass']}),
-     ('Schedule settings', {'fields': ['start_time', 'run_interval', 'instances', 'timeout', 'convert_times', 'remove_empty', 'only_title', 'report']})
+     #('Schedule settings', {'fields': ['start_time', 'run_interval', 'instances', 'timeout', 'convert_times', 'remove_empty', 'only_title', 'report']})
   ]
 
   def get_urls(self):

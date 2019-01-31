@@ -1,0 +1,25 @@
+server {
+  listen 80;
+  server_name proxy.kodibg.org;
+  listen [::]:80;
+
+  location = /favicon.ico { access_log off; log_not_found off; }
+
+  #location /static/ {
+  #  root /home/g/uWsgiApps/webgrab-proxy/;
+  #}
+
+  #location /files/ {
+  #  alias /home/g/uWsgiApps/webgrab-proxy/webgrab_proxy/temp/;
+  #}
+
+  #location /logs/ {
+  #  alias /home/g/uWsgiApps/epgapp/epgapp/logs/;
+  #  autoindex on;
+  #}
+
+  location / {
+    include uwsgi_params;
+    uwsgi_pass unix:/run/uwsgi/webgrab_proxy.sock;
+  }
+}

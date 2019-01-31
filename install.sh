@@ -26,6 +26,10 @@ link=${PWD}/nginx/freetvandradio.kodibg.org
 sudo ln -sif $link /etc/nginx/sites-enabled/
 echo `ls -la /etc/nginx/sites-enabled/freetvandradio.kodibg.org
 
+link=${PWD}/nginx/proxy.kodibg.org
+sudo ln -sif $link /etc/nginx/sites-enabled/
+echo `ls -la /etc/nginx/sites-enabled/proxy.kodibg.org
+
 echo "Enabling uwsgi service"
 link=${PWD}/service/uwsgi.service
 sudo ln -sif $link /etc/systemd/system/

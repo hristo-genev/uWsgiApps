@@ -26,13 +26,14 @@ SECRET_KEY = '3ea4e525-2476-480b-a136-1899172b2946'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['proxy.kodibg.org']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'app',
+    'webgrab_proxy',
     # Add your apps here to enable them
     'django.contrib.admin',
     'django.contrib.auth',
