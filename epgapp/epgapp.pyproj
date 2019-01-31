@@ -41,10 +41,10 @@
     <Compile Include="epgapp\helper.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="epgapp\pythongrabbers\pygrabbers.py" />
-    <Compile Include="epgapp\pythongrabbers\moviestar.py" />
-    <Compile Include="epgapp\pythongrabbers\utils.py" />
-    <Compile Include="epgapp\pythongrabbers\__init__.py" />
+    <Compile Include="epgapp\proxy\pygrabbers.py" />
+    <Compile Include="epgapp\proxy\moviestar.py" />
+    <Compile Include="epgapp\proxy\utils.py" />
+    <Compile Include="epgapp\proxy\__init__.py" />
     <Compile Include="epgapp\serializers.py">
       <SubType>Code</SubType>
     </Compile>
@@ -61,8 +61,8 @@
     <Folder Include="epgapp\" />
     <Folder Include="epgapp\bin\" />
     <Folder Include="epgapp\migrations\" />
-    <Folder Include="epgapp\pythongrabbers\" />
-    <Folder Include="epgapp\pythongrabbers\moviestar\" />
+    <Folder Include="epgapp\proxy\" />
+    <Folder Include="epgapp\proxy\moviestar\" />
     <Folder Include="epgapp\static\" />
     <Folder Include="epgapp\static\content\" />
     <Folder Include="epgapp\static\fonts\" />
@@ -80,8 +80,8 @@
     <Content Include="epgapp\bin\wgmulti.log.txt" />
     <Content Include="epgapp\bin\xmltv.dll" />
     <Content Include="epgapp\bin\xmltv_mdb_processor.exe" />
-    <Content Include="epgapp\pythongrabbers\log.txt" />
-    <Content Include="epgapp\pythongrabbers\moviestar\01.json" />
+    <Content Include="epgapp\proxy\log.txt" />
+    <Content Include="epgapp\proxy\moviestar\01.json" />
     <Content Include="epgapp\templates\epgapp\epg.html" />
     <Content Include="epgapp\templates\epgapp\stats.html" />
     <Content Include="epgapp\templates\epgapp\siteini_test.html" />

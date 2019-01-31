@@ -388,9 +388,9 @@ def map(request):
   return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
 
 
-def python_grabber(request, pythongrabbername, startdaysahead, grabfordays):
-  (status, details) = run_python_grabber(pythongrabbername, startdaysahead, grabfordays)
-  return JsonResponse( {  'pythongrabbername': pythongrabbername, 'status': status, 'details': details} )
+def python_grabber(request, slug, startdaysahead, grabfordays):
+  (status, details) = run_python_grabber(slug, startdaysahead, grabfordays)
+  return JsonResponse( {  'pythongrabbername': slug, 'status': status, 'details': details} )
 
 def get_json_epg(request, pythongrabbername, day):
   data = get_epg_for_python_grabber(pythongrabbername, day)

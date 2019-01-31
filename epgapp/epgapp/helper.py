@@ -9,7 +9,7 @@ import requests
 import traceback
 from .settings import APP_DIR
 from importlib import import_module
-from epgapp.pythongrabbers import pygrabbers
+from epgapp.proxy import pygrabbers
 
 logger = logging.getLogger(__name__)
 
@@ -448,15 +448,19 @@ def get_channels_map(channels):
   return streams
 
 
-def run_python_grabber(pythongrabbername, startdaysahead=3, grabfordays=1):
+def run_python_grabber(slug, startdaysahead=0, grabfordays=1):
 
   status = False
   details = ''
-  out_dir = os.path.join(cwd, 'pythongrabbers')
-  
+  out_dir = os.path.join(cwd, 'proxy')
+  pythongrabbername = slug
+  obj = Proxy.object.get(slug=pythongrabbername)
+
+  with open(os.joing(out_dir, pythongrabbername + '.py'), w) as w:
+    w.write(obj.content)
+
   if hasattr(pygrabbers, pythongrabbername):
     try:
-      out_dir = os.path.join(cwd, 'pythongrabbers')
       logger.debug("Executing %s(%s, %s)" % (pythongrabbername, startdaysahead, grabfordays))
       func = getattr(pygrabbers, pythongrabbername)
       res = func(out_dir, int(startdaysahead), int(grabfordays))

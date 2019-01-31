@@ -35,8 +35,8 @@ class ChannelAdmin(admin.ModelAdmin):
   prepopulated_fields = {'slug': ('name',)}
   preserve_filters    = True
   autocomplete_fields = [ 'category' ]
-  actions             = ['sync_with_playlist', 'batch_enable_channels', 'batch_disable_channels']
-  ordering            = ['created']
+  actions             = [ 'sync_with_playlist', 'batch_enable_channels', 'batch_disable_channels' ]
+  ordering            = [ 'created' ]
 
   def sync_with_playlist(self, request, queryset):
     from .helper import sync_channels_with_playlist
@@ -122,8 +122,3 @@ admin.site.register(Grabbers,GrabbersAdmin)
 class SchedulerAdmin(admin.ModelAdmin):
   list_display        = ['name', 'settings', 'start_time', 'run_interval', 'instances']
 admin.site.register(Scheduler,SchedulerAdmin)
-
-
-class ProxyAdmin(admin.ModelAdmin):
-  list_display = '__all__'
-admin.site.register(Proxy, ProxyAdmin)

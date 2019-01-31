@@ -232,12 +232,3 @@ class Scheduler(models.Model):
     verbose_name = "Grabbing Schedulers"
     verbose_name_plural = "     Grabbing Schedulers"
 
-
-class Proxy(models.Model):
-  enabled = models.BooleanField()
-  name    = models.CharField('Name of python proxy', max_length=256)
-  content = models.TextField()
-
-  class Meta:
-    verbose_name = "Proxies"
-    verbose_name_plural = "Proxies"

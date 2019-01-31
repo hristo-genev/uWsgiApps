@@ -38,9 +38,11 @@ urlpatterns = [
     url(r'^settings/*$', epgapp.views.settings, name='settings-url'),
     url(r'^settings/raw/(?P<id>.+?)$', epgapp.views.exported_settings, name='exported-settings'),
     url(r'^settings/raw/$', epgapp.views.exported_settings, name='exported-last-settings'),
-    url(r'^pythongrabbers/run/(?P<pythongrabbername>.*?)/(?P<startdaysahead>\d)/(?P<grabfordays>\d)/', epgapp.views.python_grabber, name='run-python-grabber'),
+    #url(r'^pythongrabbers/run/(?P<pythongrabbername>.*?)/(?P<startdaysahead>\d)/(?P<grabfordays>\d)/', epgapp.views.python_grabber, name='run-python-grabber'),
     url(r'^pythongrabbers/epg/(?P<pythongrabbername>.*?)/(?P<day>\d+?).json', epgapp.views.get_json_epg, name='get-json-epg'),
     url(r'^logs/(?P<siteini>.*)$', epgapp.views.get_epg_log, name='get-log'),
     #url(r'run/webgrab/siteini/', epgapp.views.grab_test_siteini, name='grab-test-siteini'),
     url(r'run/webgrab/channel/', epgapp.views.grab_single_channel_epg, name='grab-channel-epg'),
+    url(r'^proxy/(?P<slug>.*?)/(?P<startdaysahead>\d)/(?P<grabfordays>\d)/', epgapp.views.python_grabber, name='run-python-grabber'),
+    
 ]
