@@ -11,7 +11,7 @@ def normalize(txt):
 def to_dict(programs):
   return [p.__dict__ for p in programs]
 
-def sort(programs, reverse):
+def sort(programs, reverse=False):
   print ("Sorting")
   return sorted(programs, key=lambda p: p["starttime"], reverse=reverse)
 
@@ -53,6 +53,9 @@ def get_soup(url, headers=None):
   return soup
 
 def get_content(url, headers=None):
+  if not url:
+    return
+
   global __headers__
   if headers:
     __headers__ = headers
@@ -138,6 +141,9 @@ class Program():
     print ("startime=%s" % starttime)
     self.title = title
     print ("title=%s" % title)
+
+    def __str__(self):
+      return self.starttime + " " + self.title
 
 def get_dates(MAXDAYS=3, STARTDAY=0):
   dates = []

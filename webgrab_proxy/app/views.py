@@ -13,9 +13,10 @@ def home(request):
   assert isinstance(request, HttpRequest)
   return HttpResponse("Home", content_type="text/plain")
 
-def grab(request, channel, startdaysahead=0):
+def grab(request, channel, startdaysahead=0, maxdays=1):
   assert isinstance(request, HttpRequest)
-  programs = get_programs(channel, startdaysahead)
+  maxdays = maxdays if maxdays else 1
+  programs = get_programs(channel, startdaysahead, maxdays)
   return JsonResponse(programs, json_dumps_params={"indent":2, "separators":(',', ': '), "ensure_ascii":False}, safe=False)
 
 def get_raw_response(request):

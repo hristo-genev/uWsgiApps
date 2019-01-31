@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "epgapp", "epgapp\epgapp.pyproj", "{E3584EDD-0146-4C48-AB60-AAAFA4F1514D}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "webgrab-proxy", "webgrab-proxy\webgrab-proxy.pyproj", "{0A97EC8A-34AC-4469-B0A3-741BF0F9D0B4}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "webgrab-proxy", "webgrab_proxy\webgrab-proxy.pyproj", "{0A97EC8A-34AC-4469-B0A3-741BF0F9D0B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

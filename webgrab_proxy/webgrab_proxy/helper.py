@@ -13,13 +13,14 @@ from webgrab_proxy.utils import *
 
 out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp')
 
-def get_programs(channel, startdaysahead):
+def get_programs(channel, startdaysahead, maxdays):
   if channel == 'moviestar':
-    return moviestar(startdaysahead)
+    return moviestar(startdaysahead, maxdays)
 
-def moviestar(startdaysahead):
+def moviestar(startdaysahead, maxdays):
   STARTDAY = startdaysahead #3 means start capturing 3 days ahead
-  MAXDAYS = 1 #capture for how many days
+  MAXDAYS = maxdays #capture for how many days
+  GRAB_DETAILS = True
   channel = "moviestar"
   host = base64.b64decode("aHR0cDovL21vdmllc3Rhci5iZy8=")
   headers = {"User-agent":"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36" , "Referer": host}
@@ -28,11 +29,15 @@ def moviestar(startdaysahead):
 
   ### Calculate dates for for scrabbing days
   dates = get_dates(MAXDAYS, STARTDAY)
-  
   total = 0
 
-  ### Iterate days
-  for i in range(0, MAXDAYS):
+
+  ### Iterate day
+  daily_programs = {}
+  for i in range(0, int(MAXDAYS)):
+
+    programs = []
+    programs_sorted = []
     url = url_template % (host.decode('utf-8'), dates[i].epochtime, dates[i+1].epochtime)
     items = get_content_json(url, headers)
     file_name = get_file_name( out_dir, channel, dates[i].day )
@@ -40,8 +45,6 @@ def moviestar(startdaysahead):
     #return codecs.decode(items, 'unicode_escape')
     #return json.dumps(items, ensure_ascii=False)
     #return bytes(items, "utf-8").decode("unicode_escape")
-    programs = []
-    programs_sorted = []
 
     # Save full content and convert to json
     #with open(file_name, "wb") as f:
@@ -61,17 +64,17 @@ def moviestar(startdaysahead):
 
     for item in items["EVENTS"]:
       rdates = item["fc_rdate"].split(",")
+
       for rdate in rdates:
         if dates[i].datetime in rdate:
-
           title = normalize(item["title"]) .capitalize()
           starttime = rdate[9:11]+":"+rdate[11:13]
           program = Program(starttime, title)
 
-          program.url = item["url"]
+          program.url = item.get("url")
           programs.append(program)
 
-    if True:
+    if GRAB_DETAILS:
       print ("Searching for movie details")
       for program in programs:
         try:
@@ -117,12 +120,12 @@ def moviestar(startdaysahead):
         except Exception as er:
           print(er)
 
-        del program.url
+        if hasattr(program, "url"):
+          del program.url
+    # Add daily programs to day object
+    daily_programs[dates[i].day] = sort(to_dict(programs))
 
-      total += len( programs )
-  output = sort(to_dict( programs ), False)
-
-  return output
+  return daily_programs
 
 
 
