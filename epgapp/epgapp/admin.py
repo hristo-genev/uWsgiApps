@@ -111,12 +111,12 @@ class SettingsAdmin(admin.ModelAdmin):
 admin.site.register(Settings,SettingsAdmin)
 #admin.site.register(Modes)
 
-class GrabbersAdmin(admin.ModelAdmin):
-  list_display  = ['channel', 'siteini', 'site_id']
-  search_fields = ['channel', 'siteini__name', 'site_id']
-  list_per_page = 20
-  list_filter   = ['siteini']
-admin.site.register(Grabbers,GrabbersAdmin)
+#class GrabbersAdmin(admin.ModelAdmin):
+#  list_display  = ['channel', 'siteini', 'site_id']
+#  search_fields = ['channel', 'siteini__name', 'site_id']
+#  list_per_page = 20
+#  list_filter   = ['siteini']
+#admin.site.register(Grabbers,GrabbersAdmin)
 
 class SchedulerAdmin(admin.ModelAdmin):
   list_display  = ['name', 'settings', 'start_time', 'run_interval', 'instances']
