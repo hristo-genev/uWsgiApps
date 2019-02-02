@@ -19,11 +19,13 @@ class TimeshiftsSerializer(serializers.ModelSerializer):
     fields = [ 'name', 'xmltv_id', 'offset', 'enabled']
 
 class ChannelSerializer(serializers.ModelSerializer):
+  id         = serializers.IntegerField()
   siteinis   = GrabbersSerializer(source='grabbers_set', many=True)
   timeshifts = TimeshiftsSerializer(source='timeshifts_set', many=True)
+  
   class Meta:
     model  = Channel
-    fields = [ 'name', 'xmltv_id', 'update', 'siteinis', 'timeshifts' ]
+    fields = [ 'id', 'name', 'xmltv_id', 'update', 'siteinis', 'timeshifts' ]
 
 #class MapSerializer(serializers.ModelSerializer):
 #  timeshifts = TimeshiftsSerializer(source='timeshifts_set', many=True)
@@ -33,14 +35,15 @@ class ChannelSerializer(serializers.ModelSerializer):
 #    fields = ['name', 'xmltv_id', 'category', 'timeshifts']
 
 class SingleSiteiniSerializer(serializers.Serializer):
-  name = serializers.CharField(max_length=200)
-  site_id  = serializers.CharField(max_length=512)
+  name    = serializers.CharField(max_length=200)
+  site_id = serializers.CharField(max_length=512)
 
 class SingleChannelSerializer(serializers.Serializer):
-  name  = serializers.CharField(max_length=200)
-  xmltv_id  = serializers.CharField(max_length=200)
-  update  = serializers.CharField(max_length=1)
-  siteinis  = SingleSiteiniSerializer(many=True)
+  id       = serializers.IntegerField()
+  name     = serializers.CharField(max_length=200)
+  xmltv_id = serializers.CharField(max_length=200)
+  update   = serializers.CharField(max_length=1)
+  siteinis = SingleSiteiniSerializer(many=True)
 
 
 class ModesSerializer(serializers.ModelSerializer):
