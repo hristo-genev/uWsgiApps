@@ -76,9 +76,10 @@ def run(request, id):
     scheduler  = Scheduler.objects.get(id=id)
     settings  = Settings.objects.get(id=scheduler.settings_id)
     json_data = generate_settings_file_content(settings)
+    settings_file_name = "wgmulti.{0}.config.json".format(settings.id);
 
-    result['config']   = save_config_file(scheduler)
-    result['settings'] = save_settings_file(json_data)
+    result['config']   = save_config_file(scheduler, settings_file_name)
+    result['settings'] = save_settings_file(json_data, None, settings_file_name )
     result['siteinis'] = save_siteinis()
     result['grabbing'] = start_grabbing()
 

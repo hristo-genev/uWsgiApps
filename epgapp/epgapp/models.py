@@ -206,7 +206,8 @@ class Scheduler(models.Model):
   remove_empty  = models.BooleanField('Remove channels with no programmes', default=True)
   only_title    = models.BooleanField('Copy only title of timeshifted channels', default=True)
   report        = models.BooleanField('Generate report file', default=True)
-
+  postscript    = models.CharField('Post processing script', max_length=1024, blank=True, 
+                                   help_text='The script will be run after the grabbing completes')
 
   def __str__(self):
     return self.name

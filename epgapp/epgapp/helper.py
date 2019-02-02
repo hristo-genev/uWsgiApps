@@ -52,7 +52,7 @@ def isRunning(processId='wgmulti.exe'):
       logger.exception('Error during isRunning execution')
       return False
 
-def save_config_file(scheduler=None):
+def save_config_file(scheduler=None, wgmulti_settings_file=None):
   """
   Saves the wgmulti.exe.config file
   """
@@ -78,8 +78,12 @@ def save_config_file(scheduler=None):
     updateKey('CopyOnlyTitleForOffsetChannel', str(scheduler.only_title))
     updateKey('GenerateResultsReport', str(scheduler.report))
     updateKey('ReportFolder', os.path.join(APP_DIR, 'logs'))
-
+    updateKey('JsonConfigFileName', os.path.join(APP_DIR, 'temp', wgmulti_settings_file))
+    updateKey('RunPostprocessScript', True)
+    updateKey('PostprocessScript', scheduler.postscript)
+    
     tree.write(config_file_path)
+
 
     status = True
     message = '%s successfully saved on disk!' % config_file_name
