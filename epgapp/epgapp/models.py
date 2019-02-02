@@ -124,23 +124,6 @@ class Timeshifts(models.Model):
     ordering = ['offset']
     verbose_name_plural = '         Timeshifted channels'
 
-class Epg(models.Model):
-  channel   = models.ForeignKey(Channel, on_delete=models.CASCADE)
-  start     = models.CharField(max_length=20)
-  stop      = models.CharField(max_length=20)
-  title     = models.CharField(max_length=1024)
-  sub_title = models.CharField(max_length=1024, blank=True)
-  ori_title = models.CharField(max_length=1024, blank=True)
-  date      = models.CharField(max_length=20, blank=True)
-  category  = models.CharField(max_length=1024, blank=True)
-  episode   = models.CharField(max_length=128, blank=True)
-  rating    = models.CharField(max_length=128, blank=True)
-  subtitles = models.CharField(max_length=128, blank=True)
-  audio     = models.CharField(max_length=128, blank=True)
-  credits   = models.TextField(blank=True)
-  desc      = models.TextField(blank=True)
-
-
 
 class Grabbers(models.Model):
   channel  = models.ForeignKey(Channel, on_delete=models.CASCADE)
@@ -232,3 +215,22 @@ class Scheduler(models.Model):
     verbose_name = "Grabbing Schedulers"
     verbose_name_plural = "     Grabbing Schedulers"
 
+
+class Program(models.Model):
+  channel   = models.ForeignKey(Channel, on_delete=models.CASCADE)
+  starttime = models.CharField(max_length=20)
+  stoptime  = models.CharField(max_length=20)
+  title_xml = models.TextField(blank=True)
+  program_xml = models.TextField(blank=True)
+  title     = models.CharField(max_length=4092, blank=True)
+  sub_title = models.CharField(max_length=4092, blank=True)
+  ori_title = models.CharField(max_length=4092, blank=True)
+  icon      = models.CharField("Icon", max_length=1024, blank=True)
+  date      = models.CharField(max_length=20, blank=True)
+  category  = models.CharField(max_length=1024, blank=True)
+  episode   = models.CharField(max_length=128, blank=True)
+  rating    = models.CharField(max_length=128, blank=True)
+  subtitles = models.CharField(max_length=128, blank=True)
+  audio     = models.CharField(max_length=128, blank=True)
+  credits   = models.CharField(max_length=4092, blank=True)
+  desc      = models.TextField(blank=True)
