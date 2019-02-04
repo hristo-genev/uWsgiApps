@@ -62,7 +62,8 @@ def save_config_file(scheduler=None, wgmulti_settings_file=None):
     import xml.etree.ElementTree as ET
     config_file_name = 'wgmulti.exe.config'
     config_file_path = os.path.join(APP_DIR, 'bin', config_file_name)
-    tree = ET.parse(config_file_path)
+    config_file_template = os.path.join(APP_DIR, 'bin', 'wgmulti.exe.config.template')
+    tree = ET.parse(config_file_template)
     root = tree.getroot()
 
     def updateKey(key, value):
@@ -79,19 +80,19 @@ def save_config_file(scheduler=None, wgmulti_settings_file=None):
     updateKey('GenerateResultsReport', str(scheduler.report))
     updateKey('ReportFolder', os.path.join(APP_DIR, 'logs'))
     updateKey('JsonConfigFileName', os.path.join(APP_DIR, 'temp', wgmulti_settings_file))
-    updateKey('RunPostprocessScript', True)
+    updateKey('RunPostprocessScript', 'true')
     updateKey('PostprocessScript', scheduler.postscript)
-    
-    tree.write(config_file_path)
+    logger.debug("postprocess script: %s" % scheduler.postscript)
 
+    tree.write(config_file_path)
 
     status = True
     message = '%s successfully saved on disk!' % config_file_name
 
   except Exception as er:
 
-    message = str(er)
-    logger.exception('Error during saving wgmulti.config.xml on disk')
+    message = 'Error during saving wgmulti.exe.config on disk'
+    logger.exception(message)
 
   return { 'status': status, 'message': message }
 
