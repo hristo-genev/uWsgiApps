@@ -22,7 +22,8 @@
     <add key="ReportFolder" value="" />
     <add key="SaveStandaloneGuides" value="true" />
     <add key="RunPostprocessScript" value="true" />
-    <add key="PostprocessScript" value="export2db.py %JsonConfigFileName%" />
+    <add key="PostprocessScript" value="" />
+    <add key="PostprocessArguments" value="" />
   </appSettings>
   <system.web>
     <membership defaultProvider="ClientAuthenticationMembershipProvider">

@@ -81,8 +81,10 @@ def save_config_file(scheduler=None, wgmulti_settings_file=None):
     updateKey('ReportFolder', os.path.join(APP_DIR, 'logs'))
     updateKey('JsonConfigFileName', os.path.join(APP_DIR, 'temp', wgmulti_settings_file))
     updateKey('RunPostprocessScript', 'true')
-    updateKey('PostprocessScript', scheduler.postscript)
-    logger.debug("postprocess script: %s" % scheduler.postscript)
+    updateKey('PostprocessScript', scheduler.postcommand)
+    logger.debug("postprocess script: %s" % scheduler.postcommand)
+    updateKey('PostprocessArguments', scheduler.postargs)
+    logger.debug("postprocess script: %s" % scheduler.postargs)
 
     tree.write(config_file_path)
 
