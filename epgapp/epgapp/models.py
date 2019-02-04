@@ -200,14 +200,16 @@ class Scheduler(models.Model):
   start_time    = models.CharField(max_length=5, default="05:00")
   run_interval  = models.IntegerField('Run every N days', default=1)
   instances     = models.IntegerField('Number of processes', default=1, 
-                                         help_text='The maximum number of WebGrab processes running at the same time')
+                                   help_text='The maximum number of WebGrab processes running at the same time')
   timeout       = models.IntegerField('Process timeout', default=40, help_text='Minutes to wait before killing the WebGrab process')
   convert_times = models.BooleanField('Convert times to local time', default=True)
   remove_empty  = models.BooleanField('Remove channels with no programmes', default=True)
   only_title    = models.BooleanField('Copy only title of timeshifted channels', default=True)
   report        = models.BooleanField('Generate report file', default=True)
-  postscript    = models.CharField('Post processing script', max_length=1024, blank=True, 
-                                   help_text='The script will be run after the grabbing completes')
+  postcommand   = models.CharField('Post processing command', max_length=1024, blank=True, 
+                                   help_text='The command will be run after the grabbing completes')
+  postargs      = models.CharField('Post processing arguments', max_length=1024, blank=True, 
+                                   help_text='Add arguments to the command that will be run')
 
   def __str__(self):
     return self.name
