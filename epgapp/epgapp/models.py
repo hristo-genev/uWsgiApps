@@ -237,3 +237,15 @@ class Program(models.Model):
   audio     = models.CharField(max_length=128, blank=True)
   credits   = models.CharField(max_length=4092, blank=True)
   desc      = models.TextField(blank=True)
+
+
+class Profile(models.Model):
+  name      = models.CharField('Name of the Profile', default='Default profile', max_length=256)
+  channels  = models.ManyToManyField(Channel, blank=True, verbose_name=' Channels in EPG')
+
+  def __str__(self):
+    return self.name
+
+  class Meta:
+    verbose_name = "EPG export profiles"
+    verbose_name_plural = "  Profiles"

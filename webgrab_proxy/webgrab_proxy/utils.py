@@ -85,7 +85,7 @@ def get_content_json(url, headers=None):
     except: pass
   return r.json()
 
-def get_file_name(out_dir, channel_name, day):
+def get_json_file_name(out_dir, channel_name, day):
 
   dir_path = os.path.join( out_dir, channel_name)
 

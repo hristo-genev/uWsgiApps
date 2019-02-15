@@ -121,3 +121,7 @@ admin.site.register(Settings,SettingsAdmin)
 class SchedulerAdmin(admin.ModelAdmin):
   list_display  = ['name', 'settings', 'start_time', 'run_interval', 'instances']
 admin.site.register(Scheduler,SchedulerAdmin)
+
+class ProfileAdmin(admin.ModelAdmin):
+  list_display = ['name']
+admin.site.register(Profile, ProfileAdmin)

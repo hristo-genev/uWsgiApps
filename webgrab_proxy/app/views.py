@@ -11,11 +11,13 @@ import requests
 
 def home(request):
   assert isinstance(request, HttpRequest)
-  return HttpResponse("Home", content_type="text/plain")
+  content = '<h3>Sites</h3>'
+  content += '<a href="moviestar/">Moviestar</a>'
+  return HttpResponse(content, content_type="text/plain")
 
 def grab(request, channel, startdaysahead=0, maxdays=1):
   assert isinstance(request, HttpRequest)
-  maxdays = maxdays if maxdays else 1
+  maxdays = int(maxdays) if maxdays else 1
   programs = get_programs(channel, startdaysahead, maxdays)
   return JsonResponse(programs, json_dumps_params={"indent":2, "separators":(',', ': '), "ensure_ascii":False}, safe=False)
 

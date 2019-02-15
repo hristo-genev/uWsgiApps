@@ -26,7 +26,7 @@ SECRET_KEY = '3ea4e525-2476-480b-a136-1899172b2946'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['proxy.kodibg.org']
+ALLOWED_HOSTS = ['proxy.kodibg.org', 'localhost']
 
 
 # Application definition

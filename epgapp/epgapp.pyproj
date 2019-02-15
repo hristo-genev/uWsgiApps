@@ -77,6 +77,7 @@
     <Content Include="epgapp\bin\WebGrab+Plus.exe" />
     <Content Include="epgapp\bin\wgmulti.exe" />
     <Content Include="epgapp\bin\wgmulti.exe.config" />
+    <Content Include="epgapp\bin\wgmulti.exe.config.template" />
     <Content Include="epgapp\bin\wgmulti.log.txt" />
     <Content Include="epgapp\bin\xmltv.dll" />
     <Content Include="epgapp\bin\xmltv_mdb_processor.exe" />
