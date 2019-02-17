@@ -385,6 +385,10 @@ def map(request):
   channels = Channel.objects.all()
   #serializer = ChannelSerializer(channels, many=True)
   serializer = ChannelSerializer(channels, many=True)
+  for c in serializer.data:
+    if c.id:
+      del c.id
+  #map = json.loads(serializer.data)
   #data = get_channels_map(channels)
   return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False, 'indent': 2 }, safe=False)
 
