@@ -23,13 +23,13 @@ def is_cache_expired(channel):
   # get the stored last day grabbing was performed
   try: last_grab_day = open(cache_date_file, 'r').read()
   except: last_grab_day = None
-  
+
   if last_grab_day != str(today):
     with open(cache_date_file, 'w') as handle:
       handle.write(str(today))
       return True
   return False
-  
+
 
 def get_cached_data(channel):
   return json.loads('{"%s":' % today+open(get_json_file_name( out_dir, channel, 'daily'), encoding="utf8").read() + '\n}')
@@ -38,10 +38,10 @@ def get_cached_data(channel):
 def get_programs(channel, startdaysahead, maxdays):
   if channel == 'moviestar':
     #return moviestar(startdaysahead, maxdays)
-    if maxdays != 1 or is_cache_expired(channel):
-      return moviestar(startdaysahead, maxdays)
-    else:
-      return get_cached_data(channel)
+    #if maxdays != 1 or is_cache_expired(channel):
+    return moviestar(startdaysahead, maxdays)
+    #else:
+    #  return get_cached_data(channel)
 
 
 def moviestar(startdaysahead, maxdays):
@@ -153,8 +153,11 @@ def moviestar(startdaysahead, maxdays):
     # Add daily programs to day object
     daily_programs[dates[i].day] = sort(to_dict(programs))
 
-  with open(file_name, "wb") as f:
-    f.write(pretty_json(daily_programs[str(today)]).encode('utf-8'))
+  try:
+    with open(file_name, "wb") as f:
+      f.write(pretty_json(daily_programs[str(today)]).encode('utf-8'))
+  except:
+    pass
 
   return daily_programs
 
