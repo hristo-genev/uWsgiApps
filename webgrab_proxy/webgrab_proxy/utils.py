@@ -6,7 +6,7 @@ import os
 from bs4 import BeautifulSoup
 
 def normalize(txt):
-  return txt.lstrip().rstrip().replace("\"", "\\\"").replace("\\n","").replace("<span lang=\"BG\">", "").replace("</span>","")
+  return txt.lstrip().rstrip().replace("\\n","").replace("<span lang=\"BG\">", "").replace("</span>","")
 
 def to_dict(programs):
   return [p.__dict__ for p in programs]
@@ -43,6 +43,7 @@ def get_soup(url, headers=None):
 
   print ("Requesting url: %s" % url)
   r = requests.get(url, headers=__headers__)
+  r.encoding = r.apparent_encoding
   soup = BeautifulSoup(r.text, 'html.parser')
   ### save response
   if False:

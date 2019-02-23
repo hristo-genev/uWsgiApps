@@ -32,7 +32,7 @@ def is_cache_expired(channel):
 
 
 def get_cached_data(channel):
-  return json.loads('{"%s":' % today+open(get_json_file_name( out_dir, channel, 'daily'), encoding="utf8").read() + '\n}')
+  return json.loads('{"%s":' % today + open(get_json_file_name( out_dir, channel, 'daily'), encoding="utf8").read() + '\n}')
 
 
 def get_programs(channel, startdaysahead, maxdays):
@@ -42,6 +42,50 @@ def get_programs(channel, startdaysahead, maxdays):
     return moviestar(startdaysahead, maxdays)
     #else:
     #  return get_cached_data(channel)
+  elif 'maxsport' in channel or 'edgesport' in channel:
+    return maxsport(channel, startdaysahead, maxdays)
+
+def maxsport(channel, startdaysahead, maxdays):
+  STARTDAY = startdaysahead #3 means start capturing 3 days ahead
+  MAXDAYS = maxdays #capture for how many days
+  GRAB_DETAILS = True
+  #channel = "moviestar"
+  #host = base64.b64decode("aHR0cDovL21vdmllc3Rhci5iZy8=")
+  host = url = "http://www.a1.bg/max-sport-programa"
+  headers = {"User-agent":"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36" , "Referer": host}
+  output = json.dumps({})
+  ### Calculate dates for for scrabbing days
+  dates = get_dates(MAXDAYS, STARTDAY)
+  total = 0
+  divs_names = {
+    "maxsport1": "tvprg-0-",
+    "maxsport2": "tvprg-1-",
+    "maxsport3": "tvprg-2-",
+    "maxsport4": "tvprg-3-",
+    "edgesport": "tvprg-4-",
+    }
+
+  ### Iterate day
+  daily_programs = {}
+  for i in range(0, int(MAXDAYS)):
+    programs = []
+    programs_sorted = []
+    #url = url_template % (host.decode('utf-8'), dates[i].epochtime, dates[i+1].epochtime)
+    response = get_soup(url, headers)
+    #file_name = get_json_file_name( out_dir, channel, 'daily')
+    div_id = divs_names[channel] + str(dates[i].day)
+    today_content = response.find('div', id=div_id)
+    lis = today_content.find_all('li')
+    for li in lis:
+      starttime = li.b.getText()
+      title = li.getText().replace(starttime, '')
+      title = normalize(title)
+      program = Program(starttime, title)
+      programs.append(program)
+    
+    daily_programs[dates[i].day] = sort(to_dict(programs))
+  
+  return daily_programs
 
 
 def moviestar(startdaysahead, maxdays):
