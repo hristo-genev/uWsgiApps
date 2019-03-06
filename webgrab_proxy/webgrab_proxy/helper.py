@@ -79,12 +79,13 @@ def maxsport(channel, startdaysahead, maxdays):
     for li in lis:
       starttime = li.b.getText()
       title = li.getText().replace(starttime, '')
+      starttime = starttime.zfill(5) # pad with zeroes
       title = normalize(title)
       program = Program(starttime, title)
       programs.append(program)
-    
+
     daily_programs[dates[i].day] = sort(to_dict(programs))
-  
+
   return daily_programs
 
 
