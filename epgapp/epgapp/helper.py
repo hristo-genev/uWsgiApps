@@ -37,7 +37,15 @@ def get_config_file_path(location=None, file_name=None):
 
   return os.path.join(export_dir, file_name)
 
-
+def create_dir(dir):
+  try:
+    if not os.path.isdir(dir):
+      os.makedirs(dir, True)
+      os.chmod(dir, 0o777)
+    return True
+  except Exception as er:
+    logger.exception(er)
+    return False
 
 def isRunning(processId='wgmulti.exe'):
     """
@@ -52,7 +60,7 @@ def isRunning(processId='wgmulti.exe'):
       logger.exception('Error during isRunning execution')
       return False
 
-def save_config_file(scheduler=None, wgmulti_settings_file=None):
+def save_config_file(scheduler=None, wgmulti_settings_file_path=None):
   """
   Saves the wgmulti.exe.config file
   """
@@ -74,17 +82,23 @@ def save_config_file(scheduler=None, wgmulti_settings_file=None):
     updateKey('GrabingTempFolder', os.path.join(temp_path, 'data'))
     updateKey('ConfigDir', temp_path)
     updateKey('WebGrabFolder', os.path.join(APP_DIR, 'bin'))
-    updateKey('MaxAsyncProcesses', str(scheduler.instances))
-    updateKey('RemoveChannelsWithNoProgrammes', str(scheduler.remove_empty))
-    updateKey('CopyOnlyTitleForOffsetChannel', str(scheduler.only_title))
-    updateKey('GenerateResultsReport', str(scheduler.report))
+
+    if scheduler:
+      updateKey('MaxAsyncProcesses', str(scheduler.instances))
+      updateKey('RemoveChannelsWithNoProgrammes', str(scheduler.remove_empty))
+      updateKey('CopyOnlyTitleForOffsetChannel', str(scheduler.only_title))
+      updateKey('GenerateResultsReport', str(scheduler.report))
+      updateKey('PostprocessScript', scheduler.postcommand)
+      logger.debug("postprocess script: %s" % scheduler.postcommand)
+      updateKey('PostprocessArguments', scheduler.postargs)
+      logger.debug("postprocess script: %s" % scheduler.postargs)
+
     updateKey('ReportFolder', os.path.join(APP_DIR, 'logs'))
-    updateKey('JsonConfigFileName', os.path.join(APP_DIR, 'temp', wgmulti_settings_file))
     updateKey('RunPostprocessScript', 'true')
-    updateKey('PostprocessScript', scheduler.postcommand)
-    logger.debug("postprocess script: %s" % scheduler.postcommand)
-    updateKey('PostprocessArguments', scheduler.postargs)
-    logger.debug("postprocess script: %s" % scheduler.postargs)
+
+    if not wgmulti_settings_file_path:
+      wgmulti_settings_file_path = os.path.join(APP_DIR, 'temp', 'wgmulti.config.json')
+    updateKey('JsonConfigFileName', wgmulti_settings_file_path)
 
     tree.write(config_file_path)
 
@@ -127,12 +141,12 @@ def generate_settings_file_content(settings, channels=None):
   return None
 
 
-def save_settings_file(json_data, location=None, file_name=None):
+def save_settings_file(json_data, config_file_path):
   """
   Saves settings and channels in config JSON file
   """
   status = False
-  config_file_path = get_config_file_path(location, file_name)
+  create_dir(os.path.dirname(config_file_path))
 
   try:
     content = JSONRenderer().render(json_data, renderer_context={'indent': 2})
@@ -250,7 +264,7 @@ def get_report(channel_xmltv_id=None):
   message = ''
   details = ''
   status = False
-  report = None
+  report = {}
   try:
     file_path = os.path.join(APP_DIR, 'logs', channel_xmltv_id + '.report.json')
     logger.debug("Getting report from file: %s" % file_path)

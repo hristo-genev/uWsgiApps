@@ -39,7 +39,7 @@ class SingleSiteiniSerializer(serializers.Serializer):
   site_id = serializers.CharField(max_length=512)
 
 class SingleChannelSerializer(serializers.Serializer):
-  id       = serializers.IntegerField()
+  #id       = serializers.IntegerField()
   name     = serializers.CharField(max_length=200)
   xmltv_id = serializers.CharField(max_length=200)
   update   = serializers.CharField(max_length=1)

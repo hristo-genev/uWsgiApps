@@ -209,29 +209,29 @@ $(document).ready(function () {
         }
 
 
-        var checkGrabbingStatus = function () {
-            $.ajax({
-                url: '/grabbing/run/status/' + processId,
-                dataType: 'json',
-                success: function (data) {
-                    if (data.isRunning) {
-                        $('#status').html('Status: Running...');
-                    } else {
-                        $('#status').html('Status: Not running!');
-                        $("#startTest").attr("disabled", false);
-                        clearTimeout(statusHandle);
-                        clearTimeout(logHandle);
-                        getEpgData();
-                    }
+    var checkGrabbingStatus = function () {
+        $.ajax({
+            url: '/grabbing/run/status/' + processId,
+            dataType: 'json',
+            success: function (data) {
+                if (data.isRunning) {
+                    $('#status').html('Status: Running...');
+                } else {
+                    $('#status').html('Status: Not running!');
+                    $("#startTest").attr("disabled", false);
+                    clearTimeout(statusHandle);
+                    clearTimeout(logHandle);
+                    getEpgData();
                 }
-            })
-            .fail(function (data) {
-                $('#status').html(data.responseText);
-                $("#startTest").attr('disabled', false);
-                clearTimeout(statusHandle);
-                clearTimeout(logHandle);
-            });
-        }
+            }
+        })
+        .fail(function (data) {
+            $('#status').html(data.responseText);
+            $("#startTest").attr('disabled', false);
+            clearTimeout(statusHandle);
+            clearTimeout(logHandle);
+        });
+    }
 
         $("#siteini_id").change(function () {
             updateHrefFromDropdownSelection(this, document.getElementById("siteini_edit_link"));

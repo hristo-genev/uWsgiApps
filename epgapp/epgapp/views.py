@@ -75,11 +75,14 @@ def run(request, id):
 
     scheduler  = Scheduler.objects.get(id=id)
     settings  = Settings.objects.get(id=scheduler.settings_id)
-    json_data = generate_settings_file_content(settings)
+    
     settings_file_name = "wgmulti.{0}.config.json".format(settings.id);
+    settings_file_path = os.path.join(APP_DIR, 'temp', settings_file_name)
 
-    result['config']   = save_config_file(scheduler, settings_file_name)
-    result['settings'] = save_settings_file(json_data, None, settings_file_name )
+    result['config']   = save_config_file(scheduler, settings_file_path)
+
+    json_data = generate_settings_file_content(settings)
+    result['settings'] = save_settings_file(json_data, settings_file_path )
     result['siteinis'] = save_siteinis()
     result['grabbing'] = start_grabbing()
 
@@ -223,14 +226,14 @@ class SiteiniListView(ListView):
 
 class SiteiniDetailView(DetailView):
 
-    model   = Siteini
+  model   = Siteini
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['now'] = timezone.now()
-        file_path = os.path.join(APP_DIR, 'temp/data/', context['siteini'].name, 'epg.xml')
-        context['content'] = get_raw_epg(file_path)
-        return context
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['now'] = timezone.now()
+    file_path = os.path.join(APP_DIR, 'temp/data/', context['siteini'].name, 'epg.xml')
+    context['content'] = get_raw_epg(file_path)
+    return context
 
 
 @login_required
@@ -295,14 +298,23 @@ def run_siteini_test(request):
   try:
     siteini  = Siteini.objects.get(id=siteini_id)
     location   = os.path.join(temp_path, 'data', siteini.name)
+
     channel['siteinis'] = [{ 'name': siteini.name, 'site_id': site_id}]
+
     settings = Settings.objects.get(id=config_id)
     settings.report = False # Disable report for single channel grabbing
-    save_config_file(settings)
+
+    settings_file_path = os.path.join(location, 'wgmulti.config.json')
+    save_config_file(None, settings_file_path)
+
     data = generate_settings_file_content(settings, channel)
-    save_settings_file(data, location)
+
+    save_settings_file(data, settings_file_path)
+
     save_siteini(siteini, location)
+
     res = start_grabbing(location)
+
     return JsonResponse(res)
 
   except Exception as ex:
@@ -315,7 +327,7 @@ def grab_single_channel_epg(request):
   if request.method == 'GET':
     return JsonResponse({'status': False, 'message': 'GET request not supported for this operation', 'details': 'Do POST' })
 
-  siteini_name  = request.POST['siteini'].split("|||")[0]
+  siteini_id  = request.POST['siteini'].split("|||")[0]
   name        = request.POST['channel_name']
   xmltv_id    = request.POST['xmltv_id']
   site_id     = request.POST['siteini'].split("|||")[1]
@@ -325,18 +337,25 @@ def grab_single_channel_epg(request):
   #return HttpResponse(request.POST.items())
 
   channel    = { 'name': name, 'xmltv_id': xmltv_id, 'update': update_type }
-
+  
   try:
-    location   = os.path.join(temp_path, 'data', siteini_name)
-    channel['siteinis'] = [{ 'name': siteini_name, 'site_id': site_id}]
-    settings = Settings.objects.get(id=config_id)
-    #settings.report = False # Disable report for single channel grabbing
-    save_config_file(settings)
+    siteini = Siteini.objects.get(id=siteini_id)
+    channel['siteinis'] = [{ 'name': siteini.name, 'site_id': site_id}]
 
+    location   = os.path.join(temp_path, 'data', siteini.name)
+
+    settings_file_path = os.path.join(location, 'wgmulti.config.json')
+    save_config_file(None, settings_file_path)
+
+    settings = Settings.objects.get(id=config_id)
     data = generate_settings_file_content(settings, channel)
-    save_settings_file(data, location)
+    
+    save_settings_file(data, settings_file_path)
+
     save_siteini(siteini, location)
+
     res = start_grabbing(location)
+    
     return JsonResponse(res)
 
   except Exception as ex:
