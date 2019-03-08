@@ -44,5 +44,5 @@ urlpatterns = [
     #url(r'run/webgrab/siteini/', epgapp.views.grab_test_siteini, name='grab-test-siteini'),
     url(r'run/webgrab/channel/', epgapp.views.grab_single_channel_epg, name='grab-channel-epg'),
     url(r'^proxy/(?P<slug>.*?)/(?P<startdaysahead>\d)/(?P<grabfordays>\d)/', epgapp.views.python_grabber, name='run-python-grabber'),
-    
+
 ]

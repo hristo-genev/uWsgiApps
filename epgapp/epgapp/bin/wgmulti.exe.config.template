@@ -20,6 +20,7 @@
     <add key="GenerateResultsReport" value="true" />
     <add key="ReportFileName" value="wgmulti.report.json" />
     <add key="ReportFolder" value="" />
+    <add key="SaveStandaloneReports" value="true" />
     <add key="SaveStandaloneGuides" value="true" />
     <add key="RunPostprocessScript" value="true" />
     <add key="PostprocessScript" value="" />

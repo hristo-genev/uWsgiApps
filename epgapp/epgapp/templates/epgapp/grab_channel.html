@@ -2,14 +2,61 @@
 
 {% block content %}
 
+<style>
+#startTest
+{
+  float: left;
+}
+
+svg
+{
+  max-width: 3em;
+  border-radius: 3px;
+  /*box-shadow: 2px 2px 5px #000;
+  */background: #fff;
+  fill: none;
+  stroke: #0026ff;
+  stroke-linecap: round;
+  stroke-width: 8%;
+  float:left;
+  display: none;
+}
+
+use
+{
+  stroke: #fff;
+  animation: a 2s linear infinite
+}
+
+@keyframes a
+{
+  to
+  {
+    stroke-dashoffset: 0px
+  }
+}
+
+textarea#log
+{
+  max-width: 100%;
+  background-color: #f5f5f5;
+  height: 300px;
+  overflow-y: scroll;
+  resize: none;
+  font-family: Courier;
+  font-size: 13px;
+}
+</style>
+
 <h1>{{channel.name}}</h1>
 
 <h3>Available siteinis:</h3>
 
-
-<input type="hidden" name="channel_name" id="channel_name" value="{{channel.name}}" />
-<input type="hidden" name="xmltv_id" id="xmltv_id" value="{{channel.xmltv_id}}" />
-
+<form id="grabChannelForm">
+  <input type="hidden" name="channel_name" id="channel_name" value="{{channel.name}}" />
+  <input type="hidden" name="xmltv_id" id="xmltv_id" value="{{channel.xmltv_id}}" />
+  <!--input type="hidden" name="site_id" id="site_id" value="" /-->
+  {% csrf_token %}
 <table>
   <thead>
     <tr>
@@ -20,7 +67,7 @@
   </thead>
   {% for siteini in siteinis %}
   <tr>
-    <td><input type="radio" name="siteini_id" value="{{siteini.siteini.id}}" /> {{siteini.siteini.name}}</td>
+    <td><input type="radio" name="siteini" value="{{siteini.siteini.name}}|||{{siteini.site_id}}" /> {{siteini.siteini.name}}</td>
     <td id="siteini_id_{{siteini.siteini.id}}"><!--a href="{{ siteini.siteini.get_absolute_url }}">{{ siteini.siteini.name }}</a--> {{siteini.site_id}}</td>
     <!--td>{{siteini.site_id}} <a href="{{ siteini.siteini.get_absolute_url }}">{{ siteini.siteini.name }}</a></td-->
   </tr>
@@ -50,7 +97,13 @@
      <td><a id="webgrab_configuration_edit_link" href="{% url 'admin:epgapp_settings_change' configs.0.id %}">Edit</a> | <a id="webgrab_configuration_add_link" href="{% url 'admin:epgapp_settings_add' %}">Add</a></td>    
   </tr>
   <tr>
-    <td colspan="2"><button class="start" id="">Run</button></td>
+    <td colspan="2">
+      <input id="startTest" type="submit" value="Start" />
+                <svg viewBox="-2000 -1000 4000 2000" id="loader">
+                  <path id="inf" d="M354-354A500 500 0 1 1 354 354L-354-354A500 500 0 1 0-354 354z"></path>
+                  <use xlink:href="#inf" stroke-dasharray="1570 5143" stroke-dashoffset="6713px"></use>
+                </svg>
+    </td>
   </tr>
 </table>
 
@@ -58,47 +111,45 @@
 
 {% block scripts %}
 <script>
-document.getElementsByName("siteini_id")[0].checked = true;
+document.getElementsByName("siteini")[0].checked = true;
 document.getElementById("update").selectedIndex = 1;
+var loader = $("#loader");
 
 
 $(document).ready(function () {
 
-  $("#start").submit(function (event) {
+  $("#grabChannelForm").submit(function (event) {
     var form = $(this);
     $("#startTest").attr('disabled', true);
     //$("#cancelTest").show();
     event.preventDefault();
-    var loader = $("#loader");
     loader.show();
-            var a = $("#logFileUrl");
-            // Update siteini name from selected dropdown
-            siteini_name = $("#siteini_id :selected").text();
-            a.attr("href", '/logs/' + siteini_name);
-            a.show();
+    //var a = $("#logFileUrl");
 
-            $.ajax({
-                type: 'POST',
-                url: "run/", //{#% url 'run-siteini-test' %}",
-                data: form.serialize(),
-                dataType: 'json'
-            })
-            .done(function(data) {
-                $('#status').html('Status: ' + data.message);
-                processId = data.processId;
-                if (data.details)
-                    $('#content').html(data.details);
-                statusHandle = setInterval(checkGrabbingStatus, 5000);
-                setTimeout(logHandle = setInterval(getLog, 3000), 3000);
-            })
-            .fail(function(data) {
-                $('#status').html(data.responseText);
-                $("#startTest").attr('disabled', false);
-                loader.style.display = "none";
-            });
-
-        });
-
+    $.ajax({
+      type: 'POST',
+      url: "/run/webgrab/channel/", //{#% url 'run-siteini-test' %}",
+      data: form.serialize(),
+      dataType: 'json'
+    })
+    .done(function(data) {
+      loader.hide();
+      alert("Done");
+      $('#status').html('Status: ' + data.message);
+      processId = data.processId;
+      if (data.details)
+        $('#content').html(data.details);
+      statusHandle = setInterval(checkGrabbingStatus, 5000);
+      setTimeout(logHandle = setInterval(getLog, 3000), 3000);
+      
+    })
+    .fail(function(data) {
+      loader.hide();
+      $('#status').html(data.responseText);
+      $("#startTest").attr('disabled', false);
+      loader.style.display = "none";
+    });
+  });
 });
 
 </script>

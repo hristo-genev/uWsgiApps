@@ -246,13 +246,13 @@ def start_grabbing(configDir=None):
   return { 'status': status, 'message': message, 'processId': id} #, 'stdout': stdout.decode("utf-8")}
 
 
-def get_report():
+def get_report(channel_xmltv_id=None):
   message = ''
   details = ''
   status = False
   report = None
   try:
-    file_path = os.path.join(APP_DIR, 'logs', 'wgmulti.report.json')
+    file_path = os.path.join(APP_DIR, 'logs', channel_xmltv_id + '.report.json')
     logger.debug("Getting report from file: %s" % file_path)
     with open (file_path, encoding='utf-8') as r:
       report = json.load(r)

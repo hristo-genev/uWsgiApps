@@ -161,17 +161,18 @@ class ChannelListView(ListView):
 
       channels = channels.order_by('created')
 
-      channels_in_report = get_report()['report']['channels']
+      #channels_in_report = get_report()['report']['channels']
       for channel in channels:
-        for ch in channels_in_report:
-          if ch['name'] == channel.name:
-            channel.programsCount = ch.get('programsCount')
-            channel.siteiniName = ch.get('siteiniName')
-            channel.siteiniIndex = ch.get('siteiniIndex')
-            channel.firstShowStartsAt = ch.get('firstShowStartsAt')
-            channel.lastShowStartsAt = ch.get('lastShowStartsAt')
-            channel.uptodateColor = getUptodateColor(channel.lastShowStartsAt)
-            continue
+        ch = get_report(channel.xmltv_id)['report']
+        #for ch in channels_in_report:
+        #if ch['name'] == channel.name:
+        channel.programsCount = ch.get('programsCount')
+        channel.siteiniName = ch.get('siteiniName')
+        channel.siteiniIndex = ch.get('siteiniIndex')
+        channel.firstShowStartsAt = ch.get('firstShowStartsAt')
+        channel.lastShowStartsAt = ch.get('lastShowStartsAt')
+        channel.uptodateColor = getUptodateColor(channel.lastShowStartsAt)
+        #continue
 
       return channels
 
@@ -311,8 +312,36 @@ def run_siteini_test(request):
 
 def grab_single_channel_epg(request):
 
-  pass
+  if request.method == 'GET':
+    return JsonResponse({'status': False, 'message': 'GET request not supported for this operation', 'details': 'Do POST' })
 
+  siteini_name  = request.POST['siteini'].split("|||")[0]
+  name        = request.POST['channel_name']
+  xmltv_id    = request.POST['xmltv_id']
+  site_id     = request.POST['siteini'].split("|||")[1]
+  update_type = request.POST['update']
+  config_id   = request.POST['webgrab_configuration_id']
+
+  #return HttpResponse(request.POST.items())
+
+  channel    = { 'name': name, 'xmltv_id': xmltv_id, 'update': update_type }
+
+  try:
+    location   = os.path.join(temp_path, 'data', siteini_name)
+    channel['siteinis'] = [{ 'name': siteini_name, 'site_id': site_id}]
+    settings = Settings.objects.get(id=config_id)
+    #settings.report = False # Disable report for single channel grabbing
+    save_config_file(settings)
+
+    data = generate_settings_file_content(settings, channel)
+    save_settings_file(data, location)
+    save_siteini(siteini, location)
+    res = start_grabbing(location)
+    return JsonResponse(res)
+
+  except Exception as ex:
+    logger.exception(str(ex))
+    return JsonResponse({'status': False, 'message': ex, 'details': traceback.format_exc() })
 
 
 @login_required
