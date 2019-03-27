@@ -75,7 +75,7 @@ def run(request, id):
 
     scheduler  = Scheduler.objects.get(id=id)
     settings  = Settings.objects.get(id=scheduler.settings_id)
-    
+
     settings_file_name = "wgmulti.{0}.config.json".format(settings.id);
     settings_file_path = os.path.join(APP_DIR, 'temp', settings_file_name)
 
@@ -337,7 +337,7 @@ def grab_single_channel_epg(request):
   #return HttpResponse(request.POST.items())
 
   channel    = { 'name': name, 'xmltv_id': xmltv_id, 'update': update_type }
-  
+
   try:
     siteini = Siteini.objects.get(id=siteini_id)
     channel['siteinis'] = [{ 'name': siteini.name, 'site_id': site_id}]
@@ -349,16 +349,17 @@ def grab_single_channel_epg(request):
 
     settings = Settings.objects.get(id=config_id)
     data = generate_settings_file_content(settings, channel)
-    
+
     save_settings_file(data, settings_file_path)
 
     save_siteini(siteini, location)
 
     res = start_grabbing(location)
-    
+
     return JsonResponse(res)
 
   except Exception as ex:
+
     logger.exception(str(ex))
     return JsonResponse({'status': False, 'message': ex, 'details': traceback.format_exc() })
 
@@ -379,6 +380,7 @@ def get_siteini_epg(request, siteini):
   """
   dt = ''
   details = ''
+  content = ''
   status = True
 
   try:
@@ -388,6 +390,29 @@ def get_siteini_epg(request, siteini):
     dt = datetime.fromtimestamp(os.path.getmtime(file_path))
 
   except Exception as er:
+    status = False
+    logger.exception(er)
+    details = str(er)
+
+  return JsonResponse( { 'status': status, 'raw_epg': content, 'datatime': dt, 'details': details} )
+
+
+@login_required
+def get_channel_epg(request, xmltv_id):
+  """
+  Returns EPG for particular channel epg
+  """
+  dt = ''
+  details = ''
+  status = True
+  content = ''
+
+  try:
+    file_path = os.path.join(APP_DIR, 'temp/', xmltv_id + '.epg.xml')
+    content = get_raw_epg(file_path)
+    content = htmlescape(content)
+
+  except:
     status = False
     logger.exception(er)
     details = str(er)

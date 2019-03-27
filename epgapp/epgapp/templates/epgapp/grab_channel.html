@@ -67,7 +67,7 @@ textarea#log
         </thead>
         {% for siteini in siteinis %}
         <tr>
-            <td><input type="radio" name="siteini" value="{{siteini.siteini.id}}|||{{siteini.site_id}}" /> {{siteini.siteini.name}}</td>
+            <td><input type="radio" name="siteini" value="{{siteini.siteini.id}}|||{{siteini.site_id}}|||{{siteini.siteini.name}}" /> {{siteini.siteini.name}}</td>
             <td id="siteini_id_{{siteini.siteini.id}}"><!--a href="{{ siteini.siteini.get_absolute_url }}">{{ siteini.siteini.name }}</a--> {{siteini.site_id}}</td>
             <!--td>{{siteini.site_id}} <a href="{{ siteini.siteini.get_absolute_url }}">{{ siteini.siteini.name }}</a></td-->
         </tr>
@@ -126,16 +126,18 @@ EPG:
 
     {% block scripts %}
     <script>
-        document.getElementsByName("siteini")[0].checked = true;
-        document.getElementById("update").selectedIndex = 1;
+    document.getElementsByName("siteini")[0].checked = true;
+    document.getElementById("update").selectedIndex = 1;
         
+    $(document).ready(function () {
+        var processId = 0;
+        var loader = $("#loader");
+        var log = $("#log");
+        var status = $("#status");
 
+        log.scrollTop(log[0].scrollHeight);
 
-        $(document).ready(function () {
-            var processId = 0;
-            var loader = $("#loader");
-
-            $("#grabChannelForm").submit(function (event) {
+        $("#grabChannelForm").submit(function (event) {
                 var form = $(this);
                 $("#startTest").attr('disabled', true);
                 //$("#cancelTest").show();
@@ -151,8 +153,7 @@ EPG:
                 })
                     .done(function (data) {
                         loader.hide();
-                        alert("Done");
-                        $('#status').html('Status: ' + data.message);
+                        status.html("Status: " + data.message);
                         processId = data.processId;
                         if (data.details)
                             $('#content').html(data.details);
@@ -161,7 +162,7 @@ EPG:
                     })
                     .fail(function (data) {
                         loader.hide();
-                        $('#status').html(data.responseText);
+                        status.html(data.responseText);
                         $("#startTest").attr('disabled', false);
                         loader.style.display = "none";
                     });
@@ -173,9 +174,9 @@ EPG:
                     dataType: 'json',
                     success: function (data) {
                         if (data.isRunning) {
-                            $('#status').html('Status: Running...');
+                            status.html(data.details);
                         } else {
-                            $('#status').html('Status: Not running!');
+                            status.html('Status: Not running!');
                             $("#startTest").attr("disabled", false);
                             clearTimeout(statusHandle);
                             clearTimeout(logHandle);
@@ -183,41 +184,54 @@ EPG:
                         }
                     }
                 })
-                    .fail(function (data) {
-                        $('#status').html(data.responseText);
-                        $("#startTest").attr('disabled', false);
-                        clearTimeout(statusHandle);
-                        clearTimeout(logHandle);
-                    });
+                .fail(function (data) {
+                   status.html(data.responseText);
+                   $("#startTest").attr('disabled', false);
+                   clearTimeout(statusHandle);
+                   clearTimeout(logHandle);
+                });
             }
 
 
             var getEpgData = function () {
-                let selectEl = document.getElementById('siteini_id');
-                let siteini = selectEl.options[selectEl.selectedIndex].innerHTML;
 
                 $.ajax({
-                    url: "/grabbing/epg/raw/" + siteini_name,
+                    url: "/epg/channel/" + $("#xmltv_id").val(),
                     dataType: "json",
                     success: function (data) {
                         if (data.status) {
-                            $('#content').html(data.raw_epg);
-                            $('#status').html('EPG generated on: ' + data.datatime);
+                            $("#content").html(data.raw_epg);
+                            status.html('EPG generated on: ' + data.datatime);
                         } else {
-                            $('#content').html(data.details);
+                            $("#content").html(data.details);
                         }
                     }
                 })
-                    .fail(function (data) {
-                        $('#status').html(data.responseText);
-                        $("#startTest").attr('disabled', false);
-                    })
-                    .always(function (data) {
-                        $('#loader').hide();
-                        //loader.style.display = "none";
-                        //$("#cancelTest").hide();
-                    });
+                .fail(function (data) {
+                    $("#status").html(data.responseText);
+                    $("#startTest").attr('disabled', false);
+                })
+                .always(function (data) {
+                    loader.hide();
+                    //$("#cancelTest").hide();
+                });
             }
+
+    var getLog = function() {
+      $.ajax({
+        type: 'GET',
+        url: "/logs/" + $("input[name=siteini]:checked").val().split("|||")[2]
+      })
+      .done(function(data) {
+      })
+      .always(function(data) {
+        var textarea = $("#log");
+        textarea.html(data)
+        textarea.scrollTop(textarea[0].scrollHeight);
+      })
+      .fail(function(data) {
+      });
+    };
 
         });
 

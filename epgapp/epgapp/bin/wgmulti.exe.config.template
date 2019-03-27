@@ -22,6 +22,7 @@
     <add key="ReportFolder" value="" />
     <add key="SaveStandaloneReports" value="true" />
     <add key="SaveStandaloneGuides" value="true" />
+    <add key="StandaloneGuidesFolder" value="" />
     <add key="RunPostprocessScript" value="true" />
     <add key="PostprocessScript" value="" />
     <add key="PostprocessArguments" value="" />

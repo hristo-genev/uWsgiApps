@@ -1,12 +1,12 @@
 import os
 import sys
 import json
-from .serializers import *
-from rest_framework.renderers import JSONRenderer
 import subprocess
 import logging
 import requests
 import traceback
+from .serializers import *
+from rest_framework.renderers import JSONRenderer
 from .settings import APP_DIR
 from importlib import import_module
 from epgapp.proxy import pygrabbers
@@ -94,6 +94,7 @@ def save_config_file(scheduler=None, wgmulti_settings_file_path=None):
       logger.debug("postprocess script: %s" % scheduler.postargs)
 
     updateKey('ReportFolder', os.path.join(APP_DIR, 'logs'))
+    updateKey('StandaloneGuidesFolder', os.path.join(APP_DIR, 'temp'))
     updateKey('RunPostprocessScript', 'true')
 
     if not wgmulti_settings_file_path:
@@ -267,7 +268,7 @@ def get_report(channel_xmltv_id=None):
   report = {}
   try:
     file_path = os.path.join(APP_DIR, 'logs', channel_xmltv_id + '.report.json')
-    logger.debug("Getting report from file: %s" % file_path)
+    #logger.debug("Getting report from file: %s" % file_path)
     with open (file_path, encoding='utf-8') as r:
       report = json.load(r)
     status = True
