@@ -133,7 +133,7 @@ def getUptodateColor(dateInEpg):
     itoday = int(today)
     idateInEpg = int(dateInEpg)
 
-    logger.debug("today: %s, epg: %s" % (today, dateInEpg))
+    #logger.debug("today: %s, epg: %s" % (today, dateInEpg))
 
     if dateInEpg > today:
       return "green"

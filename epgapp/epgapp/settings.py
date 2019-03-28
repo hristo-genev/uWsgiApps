@@ -1,11 +1,17 @@
 import os
 import posixpath
+import logging
+
+logger = logging.getLogger(__name__)
+logger.debug("Init")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP_NAME = 'epgapp'
 APP_DIR  = os.path.join(BASE_DIR, APP_NAME)
+
 WSGI_APPLICATION = APP_NAME + '.wsgi.application'
+
 LOGIN_REDIRECT_URL = 'home-link'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'a40eb3b4-fde5-4d71-8e91-26184e320329'
@@ -15,17 +21,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['epgapp.kodibg.org','localhost']
 
-BROKER_URL = 'amqp://'
-CELERY_ACCEPT_CONTENT = ['pickle']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-
 
 # Application definition
 INSTALLED_APPS = [
-    APP_NAME,
+    APP_NAME + '.apps.EpgappConfig',
     # Add your apps here to enable them
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djcelery', # scheduler
 ]
 
 MIDDLEWARE = [
@@ -99,7 +97,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'EET'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True

@@ -239,13 +239,13 @@ class Program(models.Model):
   desc      = models.TextField(blank=True)
 
 
-class Profile(models.Model):
-  name      = models.CharField('Name of the Profile', default='Default profile', max_length=256)
-  channels  = models.ManyToManyField(Channel, blank=True, verbose_name=' Channels in EPG')
+#class Profile(models.Model):
+#  name      = models.CharField('Name of the Profile', default='Default profile', max_length=256)
+#  channels  = models.ManyToManyField(Channel, blank=True, verbose_name=' Channels in EPG')
 
-  def __str__(self):
-    return self.name
+#  def __str__(self):
+#    return self.name
 
-  class Meta:
-    verbose_name = "EPG export profiles"
-    verbose_name_plural = "  Profiles"
+#  class Meta:
+#    verbose_name = "EPG export profiles"
+#    verbose_name_plural = "  Profiles"
