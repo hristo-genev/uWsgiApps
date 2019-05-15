@@ -22,7 +22,7 @@ def run(out_dir, startday, maxday, debug=False):
 
   ### Calculate dates for for scrabbing days
   dates = get_dates(MAXDAYS, STARTDAY)
-  
+
   total = 0
 
   ### Iterate days
@@ -31,7 +31,7 @@ def run(out_dir, startday, maxday, debug=False):
     text = get_content(url, headers)
 
     file_name = get_file_name( out_dir, channel, dates[i].day )
-    
+
     programs = []
     programs_sorted = []
 

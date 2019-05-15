@@ -44,6 +44,7 @@ def contact(request):
         }
     )
 
+@login_required
 def grabbing(request):
 
   assert isinstance(request, HttpRequest)
