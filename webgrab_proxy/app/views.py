@@ -12,7 +12,7 @@ import requests
 def home(request):
   assert isinstance(request, HttpRequest)
   content = '<h3>Sites</h3>'
-  content += '<a href="moviestar/">Moviestar</a>'
+  content += '<a href="moviestar/">Moviestar</a><br />'
   return HttpResponse(content, content_type="text/plain")
 
 def grab(request, channel, startdaysahead=0, maxdays=1):

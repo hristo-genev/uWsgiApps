@@ -45,6 +45,7 @@ def get_programs(channel, startdaysahead, maxdays):
   elif 'maxsport' in channel or 'edgesport' in channel:
     return maxsport(channel, startdaysahead, maxdays)
 
+
 def maxsport(channel, startdaysahead, maxdays):
   STARTDAY = startdaysahead #3 means start capturing 3 days ahead
   MAXDAYS = maxdays #capture for how many days
