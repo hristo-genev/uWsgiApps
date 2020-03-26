@@ -2,7 +2,9 @@ server {
   listen 80;
   server_name epgapp.kodibg.org;
   listen [::]:80;
-
+  
+  include snippets/ssl-params.conf;
+  
   location = /favicon.ico { access_log off; log_not_found off; }
 
   location /static/ {
